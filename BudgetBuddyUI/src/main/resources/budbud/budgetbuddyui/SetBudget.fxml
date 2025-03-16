@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #232323;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budbud.budgetbuddyui.SetBudgetPage">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #232323;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budbud.budgetbuddyui.HomePage">
    <children>
-      <Pane prefHeight="600.0" prefWidth="220.0">
+      <Pane prefHeight="600.0" prefWidth="222.0">
          <children>
             <Rectangle height="600.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="222.0">
                <fill>
@@ -25,17 +27,17 @@
                      <stops>
                         <Stop>
                            <color>
-                              <Color red="0.16078431904315948" green="0.03921568766236305" blue="0.27450981736183167" />
+                              <Color red="0.16002079844474792" green="0.0385185182094574" blue="0.27368420362472534" />
                            </color>
                         </Stop>
                         <Stop offset="0.5074024226110364">
                            <color>
-                              <Color red="0.2549019753932953" green="0.08627451211214066" blue="0.4117647111415863" />
+                              <Color red="0.2532592713832855" green="0.08514619618654251" blue="0.410526305437088" />
                            </color>
                         </Stop>
                         <Stop offset="1.0">
                            <color>
-                              <Color red="0.19607843458652496" green="0.21176470816135406" blue="0.5254902243614197" />
+                              <Color red="0.1949317753314972" green="0.21150097250938416" blue="0.5263158082962036" />
                            </color>
                         </Stop>
                      </stops>
@@ -47,7 +49,7 @@
                   <Font name="Lucida Console" size="15.0" />
                </font>
             </Label>
-            <Button fx:id="btnHome" layoutX="1.0" layoutY="240.0" mnemonicParsing="false" onAction="#toHome" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Home" textFill="WHITE">
+            <Button fx:id="btnHome" layoutY="240.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #232323;" text="Home" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -55,15 +57,18 @@
                   <Insets right="57.0" />
                </padding>
             </Button>
-            <Button fx:id="btnSet" layoutX="1.0" layoutY="300.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #232323;" text="Set Budget" textFill="WHITE">
+            <Button fx:id="btnSet" layoutY="300.0" mnemonicParsing="false" onAction="#toBudgetSet" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Set Budget" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
                <padding>
                   <Insets right="-5.0" />
                </padding>
             </Button>
-            <Button fx:id="btnViewBudget" layoutX="1.0" layoutY="360.0" mnemonicParsing="false" onAction="#toBudgetViewer" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Budget Viewer" textFill="WHITE">
+            <Button fx:id="btnViewBudget" alignment="CENTER" layoutY="360.0" mnemonicParsing="false" onAction="#toBudgetViewer" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Budget Viewer" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -71,12 +76,12 @@
                   <Insets right="-37.0" />
                </padding>
             </Button>
-            <Button fx:id="btnGoals" layoutX="1.0" layoutY="420.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Saving Goals" textFill="WHITE">
+            <Button fx:id="btnSettings" layoutY="540.0" mnemonicParsing="false" onAction="#toSetting" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Profile" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
                <padding>
-                  <Insets right="-23.0" />
+                  <Insets right="30.0" />
                </padding>
             </Button>
             <Button fx:id="btnTips" layoutY="480.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Financial Tips" textFill="WHITE">
@@ -87,34 +92,14 @@
                   <Insets right="-45.0" />
                </padding>
             </Button>
-            <Button fx:id="btnSettings" layoutX="1.0" layoutY="540.0" mnemonicParsing="false" onAction="#toSetting" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Profile" textFill="WHITE">
+            <Button fx:id="btnGoals" layoutY="420.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Saving Goals" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
                <padding>
-                  <Insets right="30.0" />
+                  <Insets right="-23.0" />
                </padding>
             </Button>
-            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="255.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@src.main.images/home-white.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="315.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@src.main.images/notes.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="375.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@src.main.images/view.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@src.main.images/goal.png" />
-               </image>
-            </ImageView>
             <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="495.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@src.main.images/tips.png" />
@@ -125,36 +110,122 @@
                   <Image url="@src.main.images/profile.png" />
                </image>
             </ImageView>
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@src.main.images/goal.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="375.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@src.main.images/view.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="255.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@src.main.images/home-white.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="315.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@src.main.images/notes.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
-      <AnchorPane layoutX="220.0" prefHeight="600.0" prefWidth="710.0" style="-fx-background-color: #232323;">
+      <AnchorPane layoutX="220.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #232323;">
          <children>
-            <Label layoutX="26.0" layoutY="25.0" text="Set Budget" textFill="WHITE">
-               <font>
-                  <Font name="Lucida Console" size="27.0" />
-               </font>
-            </Label>
-            <VBox layoutX="26.0" layoutY="70.0" prefHeight="70.0" prefWidth="163.0">
+            <HBox layoutX="28.0" layoutY="25.0" prefHeight="50.0" prefWidth="489.0">
                <children>
-                  <Button fx:id="btnNewBudget" mnemonicParsing="false" text="Set new budget" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="btnEditBudget" mnemonicParsing="false" text="Edit existing budget" VBox.vgrow="ALWAYS">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-            </VBox>
-            <VBox layoutX="25.0" layoutY="150.0" prefHeight="420.0" prefWidth="325.0">
-               <children>
-                  <Label text="Enter a title for setting the budget" textFill="WHITE">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@src.main.images/profile.png" />
+                     </image>
+                  </ImageView>
+                  <Label prefHeight="50.0" prefWidth="203.0" text="WELCOME, NAME!" textFill="WHITE" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
                      <font>
-                        <Font name="Lucida Console" size="12.0" />
+                        <Font name="Lucida Console" size="24.0" />
                      </font>
                   </Label>
-                  <TextField />
                </children>
-            </VBox>
-            <VBox layoutX="370.0" layoutY="150.0" prefHeight="420.0" prefWidth="325.0" />
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+            <ScrollPane hbarPolicy="ALWAYS" layoutX="30.0" layoutY="145.0" prefHeight="200.0" prefWidth="650.0" style="-fx-background-color: transparent; -fx-border-color: #232323;" stylesheets="@style.css" vbarPolicy="NEVER">
+               <content>
+                  <HBox focusTraversable="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: #232323;">
+                     <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#422666" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#422666" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#422666" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#422666" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#422666" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+               </content>
+            </ScrollPane>
+            <Label layoutX="35.0" layoutY="115.0" text="What's Happening Today" textFill="WHITE">
+               <font>
+                  <Font name="Inter Bold" size="18.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="logoutImage" fitHeight="30.0" fitWidth="30.0" layoutX="673.0" layoutY="10.0" onMouseClicked="#handleLogout" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@src.main.images/switch.png" />
+               </image>
+            </ImageView>
+            <Button layoutX="35.0" layoutY="379.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="240.0" style="-fx-background-radius: 20; -fx-background-color: #323667;" text="Lodge Daily Expense" textFill="WHITE">
+               <font>
+                  <Font name="Lucida Console" size="18.0" />
+               </font>
+            </Button>
+            <Label layoutX="393.0" layoutY="379.0" text="Your Monthly Budget Overview" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="100.0" layoutY="476.0" text="Budget Meter" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <PieChart layoutX="382.0" layoutY="415.0" legendSide="RIGHT" prefHeight="142.0" prefWidth="271.0" />
+            <ProgressBar layoutX="35.0" layoutY="512.0" prefHeight="18.0" prefWidth="240.0" progress="0.0" />
          </children>
       </AnchorPane>
    </children>
