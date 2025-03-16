@@ -2,14 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
@@ -72,7 +71,7 @@
                   <Insets right="-37.0" />
                </padding>
             </Button>
-            <Button fx:id="btnSettings" layoutX="1.0" layoutY="420.0" mnemonicParsing="false" onAction="#toSetting" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Saving Goals" textFill="WHITE">
+            <Button fx:id="btnGoals" layoutX="1.0" layoutY="420.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Saving Goals" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -80,7 +79,7 @@
                   <Insets right="-23.0" />
                </padding>
             </Button>
-            <Button layoutY="480.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Financial Tips" textFill="WHITE">
+            <Button fx:id="btnTips" layoutY="480.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Financial Tips" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -88,7 +87,7 @@
                   <Insets right="-45.0" />
                </padding>
             </Button>
-            <Button layoutX="1.0" layoutY="540.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Profile" textFill="WHITE">
+            <Button fx:id="btnSettings" layoutX="1.0" layoutY="540.0" mnemonicParsing="false" onAction="#toSetting" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #323667;" text="Profile" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -130,32 +129,32 @@
       </Pane>
       <AnchorPane layoutX="220.0" prefHeight="600.0" prefWidth="710.0" style="-fx-background-color: #232323;">
          <children>
-            <Label layoutX="23.0" layoutY="24.0" text="Set Budget" textFill="WHITE">
+            <Label layoutX="26.0" layoutY="25.0" text="Set Budget" textFill="WHITE">
                <font>
-                  <Font name="Lucida Console" size="24.0" />
+                  <Font name="Lucida Console" size="27.0" />
                </font>
             </Label>
-            <Button layoutX="32.0" layoutY="300.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="254.0" style="-fx-background-radius: 20;" text="Button">
-               <graphic>
-                  <TextField prefHeight="25.0" prefWidth="190.0" promptText="Amount.." style="-fx-background-radius: 20;" />
-               </graphic>
-            </Button>
-            <Label layoutX="32.0" layoutY="276.0" text="Enter amount of the budget: " textFill="WHITE">
-               <font>
-                  <Font name="Lucida Console" size="12.0" />
-               </font>
-            </Label>
-            <ComboBox layoutX="32.0" layoutY="197.0" prefWidth="150.0" />
-            <RadioButton layoutX="32.0" layoutY="85.0" mnemonicParsing="false" text="Set new budget:" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </RadioButton>
-            <RadioButton layoutX="32.0" layoutY="126.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Edit existing budget:" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </RadioButton>
+            <VBox layoutX="26.0" layoutY="70.0" prefHeight="70.0" prefWidth="163.0">
+               <children>
+                  <Button fx:id="btnNewBudget" mnemonicParsing="false" text="Set new budget" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btnEditBudget" mnemonicParsing="false" text="Edit existing budget" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox layoutX="25.0" layoutY="150.0" prefHeight="420.0" prefWidth="325.0">
+               <children>
+                  <Label text="Enter a title for setting the budget" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField />
+               </children>
+            </VBox>
+            <VBox layoutX="370.0" layoutY="150.0" prefHeight="420.0" prefWidth="325.0" />
          </children>
       </AnchorPane>
    </children>
