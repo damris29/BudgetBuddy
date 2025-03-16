@@ -1,0 +1,28 @@
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+/* Thumb (the draggable part) */
+.scroll-pane .scroll-bar:vertical .thumb,
+.scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color:  #323667; /* Change this to your preferred color */
+    -fx-background-radius: 5px;
+}
+
+/* Track (the area where the thumb moves) */
+.scroll-pane .scroll-bar:vertical .track,
+.scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: #dfe6e9; /* Change this to match your theme */
+    -fx-background-radius: 5px;
+}
+
+/* Increment and Decrement Buttons */
+.scroll-pane .increment-button,
+.scroll-pane .decrement-button {
+    -fx-background-color: #2ecc71;
+    -fx-background-radius: 5px;
+}
