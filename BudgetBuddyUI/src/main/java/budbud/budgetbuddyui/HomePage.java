@@ -23,6 +23,9 @@ public class HomePage {
     @FXML private Button btnSet;
     @FXML private Button btnViewBudget;
     @FXML private Button btnSettings;
+    @FXML private Button btnGoals;
+    @FXML private Button btnTips;
+
     @FXML ImageView logoutImage;
 
     Image imageView = new Image(Objects.requireNonNull(getClass().getResourceAsStream("src.main.images/Logout-BBwUI.png")));
@@ -32,6 +35,8 @@ public class HomePage {
         addHoverEffect(btnSet);
         addHoverEffect(btnViewBudget);
         addHoverEffect(btnSettings);
+        addHoverEffect(btnGoals);
+        addHoverEffect(btnTips);
 
         logoutImage.setOnMouseClicked(e -> handleImageLogout());
     }
@@ -42,8 +47,8 @@ public class HomePage {
     }
 
     private void addHoverEffect(Button button) {
-        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #26284a;")); //changes color when hover mouse
-        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #323667;")); //back to original color
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #5b5b5b;")); //changes color when hover mouse
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color:  #6d6d6d;")); //back to original color
     }
 
     @FXML
@@ -66,11 +71,19 @@ public class HomePage {
     }
     @FXML
     public void toBudgetViewer(ActionEvent event){
-        loadScene(event, "BudgetViewer.fxml", "Budget Buddy - Budget Viewer");
+        loadScene(event, "ViewBudget.fxml", "Budget Buddy - Budget Viewer");
     }
     @FXML
     public void toSetting(ActionEvent event){
         loadScene(event, "SetProfile.fxml", "Budget Buddy - Settings");
+    }
+    @FXML
+    public void toGoals(ActionEvent event){
+        loadScene(event, "GoalsPage.fxml", "Budget Buddy - Saving Goals");
+    }
+    @FXML
+    public void toTips(ActionEvent event){
+        loadScene(event, "FinTipsPage.fxml", "Budget Buddy - Financial Tips");
     }
 
     private void loadScene(ActionEvent e, String fxmlFile, String title) {
