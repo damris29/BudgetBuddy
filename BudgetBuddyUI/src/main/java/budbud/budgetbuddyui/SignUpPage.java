@@ -10,45 +10,51 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 public class SignUpPage {
 
-    @FXML
-    private TextField user_signup;
+    @FXML private TextField txtUserS;
+    @FXML private TextField txtEmailS;
+    @FXML private TextField txtPhoneS;
+    @FXML private TextField txtBirthS;
+    @FXML private PasswordField txtPassS;
+    @FXML private PasswordField txtCPassS;
+    @FXML private Button btnSignUp;
 
-    @FXML
-    private PasswordField passw_signup;
-
-    @FXML
-    private DatePicker user_birth;
-
-    @FXML
-    private TextField phonenum;
-
-    @FXML
-    private CheckBox checksignup;
-
-    @FXML
-    private Button btnSignUp;
+    public void initialize() {
+        addHoverEffect(btnSignUp);
+    }
 
     @FXML
     private void handleSignUp(ActionEvent e){
-        String username = user_signup.getText();
-        String password = passw_signup.getText();
-        String birthdate = (user_birth.getValue() != null) ? user_birth.getValue().toString() : "";
-        String usernum = phonenum.getText();
-        boolean check = checksignup.isSelected();
+        String username = txtUserS.getText();
+        String email = txtEmailS.getText();
+        String phonenum = txtPhoneS.getText();
+        String birthdate = txtBirthS.getText();
+        String password = txtPassS.getText();
+        String Cpassword = txtCPassS.getText();
 
-        if (username.isEmpty() || password.isEmpty() || birthdate.isEmpty() || usernum.isEmpty()) {
+        if (username.isEmpty() || email.isEmpty() || phonenum.isEmpty() || birthdate.isEmpty() || password.isEmpty() || Cpassword.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Error", "All fields must be filled out.");
             return;
         }
 
-        if (!check) {
-            showAlert(Alert.AlertType.WARNING, "Warning", "You must agree to the terms.");
+        if (!isValidBirthdate(birthdate)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Invalid birthdate. Use DD/MM/YYYY format.");
             return;
         }
+
+        if (!password.equals(Cpassword)){
+            showAlert(Alert.AlertType.ERROR, "Error", "Password is not the same.");
+            return;
+        }
+
+        // Store user details in UserData
+        UserData.getInstance().setUserData(username, email, phonenum, birthdate, password);
 
         showAlert(Alert.AlertType.INFORMATION, "Success", "Sign-up successful!");
         loadScene(e, "LoginPage.fxml", "BudgetBuddy - Main Page");
@@ -62,6 +68,16 @@ public class SignUpPage {
         alert.showAndWait();
     }
 
+    private boolean isValidBirthdate(String birthdate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        try {
+            LocalDate date = LocalDate.parse(birthdate, formatter);
+            return true; // If parsing succeeds, the date is valid
+        } catch (DateTimeParseException ex) {
+            return false; // Parsing failed, invalid date
+        }
+    }
+
     private void loadScene(ActionEvent e, String fxmlFile, String title) {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
@@ -72,6 +88,11 @@ public class SignUpPage {
         } catch (IOException ex) {
             System.out.println("Error loading " + fxmlFile + ": " + ex.getMessage());
         }
+    }
+
+    private void addHoverEffect(Button button) {
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color:  #FFFFFF; -fx-text-fill: #242424; -fx-border-color: #000000;")); //changes color when hover mouse
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color:   #242424; -fx-text-fill: #FFFFFF;")); //back to original color
     }
 }
 
