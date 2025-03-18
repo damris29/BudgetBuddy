@@ -5,69 +5,54 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.paint.LinearGradient?>
-<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #232323;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budbud.budgetbuddyui.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budbud.budgetbuddyui.MainController">
    <children>
-      <AnchorPane prefHeight="400.0" prefWidth="325.0">
+      <ImageView fitHeight="600.0" fitWidth="930.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@src.main.images/Login.png" />
+         </image>
+      </ImageView>
+      <Pane layoutX="479.0" prefHeight="580.0" prefWidth="450.0">
          <children>
-            <Rectangle height="400.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="261.0">
-               <fill>
-                  <LinearGradient endX="1.0" endY="1.0">
-                     <stops>
-                        <Stop>
-                           <color>
-                              <Color green="0.501960813999176" blue="0.501960813999176" />
-                           </color>
-                        </Stop>
-                        <Stop offset="0.006729475100942127">
-                           <color>
-                              <Color green="0.501960813999176" blue="0.501960813999176" />
-                           </color>
-                        </Stop>
-                        <Stop offset="0.47913862718707945">
-                           <color>
-                              <Color red="0.1725490242242813" green="0.1725490242242813" blue="0.3294117748737335" />
-                           </color>
-                        </Stop>
-                        <Stop offset="1.0">
-                           <color>
-                              <Color red="0.10196078568696976" green="0.10196078568696976" blue="0.18039216101169586" />
-                           </color>
-                        </Stop>
-                     </stops>
-                  </LinearGradient>
-               </fill>
-            </Rectangle>
-            <Label layoutX="58.0" layoutY="34.0" prefHeight="27.0" prefWidth="145.0" text="WELCOME TO " textFill="GAINSBORO">
+            <Rectangle fill="WHITE" height="350.0" layoutX="50.0" layoutY="115.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="350.0" />
+            <Label layoutX="85.0" layoutY="142.0" text="LOG IN">
                <font>
-                  <Font name="Monospaced Bold" size="22.0" />
+                  <Font name="Doppio One Regular" size="17.0" />
                </font>
             </Label>
-            <Label layoutX="39.0" layoutY="61.0" prefHeight="31.0" prefWidth="183.0" text="BUDGET BUDDY" textFill="GAINSBORO">
+            <TextField fx:id="txtUserL" layoutX="85.0" layoutY="185.0" prefHeight="35.0" prefWidth="280.0" promptText="Email or Username" style="-fx-background-color: transparent; -fx-border-color: #000000;">
                <font>
-                  <Font name="Monospaced Bold" size="25.0" />
+                  <Font name="Doppio One Regular" size="14.0" />
+               </font>
+            </TextField>
+            <PasswordField fx:id="txtPassL" layoutX="85.0" layoutY="245.0" prefHeight="35.0" prefWidth="280.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #000000;">
+               <font>
+                  <Font name="Doppio One Regular" size="14.0" />
+               </font>
+            </PasswordField>
+            <Button fx:id="btnNext" layoutX="85.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="35.0" prefWidth="280.0" style="-fx-background-color: #242424;" text="NEXT" textFill="WHITE">
+               <font>
+                  <Font name="Doppio One Regular" size="17.0" />
+               </font>
+            </Button>
+            <Label alignment="CENTER" layoutX="91.0" layoutY="358.0" prefHeight="71.0" prefWidth="268.0" text="By registering, You agree to the Terms, Conditions and Policies of Borcelle &amp; Privacy Policy" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="Doppio One Regular" size="12.0" />
                </font>
             </Label>
+            <Hyperlink fx:id="toSignUp" alignment="CENTER" layoutX="85.0" layoutY="429.0" onAction="#handleSignUp" prefHeight="25.0" prefWidth="280.0" text="Create an account" textFill="#f89c03" wrapText="true">
+               <font>
+                  <Font name="Corbel" size="13.0" />
+               </font>
+            </Hyperlink>
          </children>
-      </AnchorPane>
-      <AnchorPane prefHeight="400.0" prefWidth="495.0" style="-fx-background-color: #232323;">
-         <children>
-            <Label layoutX="46.0" layoutY="169.0" text="Password" textFill="WHITE" />
-            <Label layoutX="46.0" layoutY="113.0" text="Username" textFill="WHITE" />
-            <TextField fx:id="user_login" layoutX="46.0" layoutY="131.0" prefHeight="26.0" prefWidth="248.0" promptText="Enter Username.." style="-fx-background-radius: 10;" />
-            <PasswordField fx:id="passw_login" layoutX="46.0" layoutY="188.0" prefHeight="26.0" prefWidth="248.0" promptText="Enter Password.." style="-fx-background-radius: 10;" />
-            <Button fx:id="btnlogin" layoutX="45.0" layoutY="241.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="26.0" prefWidth="138.0" style="-fx-background-radius: 20;" text="Login" />
-            <Hyperlink fx:id="passwforgor" layoutX="189.0" layoutY="242.0" prefHeight="24.0" prefWidth="103.0" text="Forgot Password?" />
-            <Button fx:id="btnsignup" layoutX="45.0" layoutY="304.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="26.0" prefWidth="248.0" style="-fx-background-radius: 20;" text="Sign Up" />
-            <Label layoutX="95.0" layoutY="330.0" prefHeight="25.0" prefWidth="146.0" text="New User? Sign Up Now!" textFill="WHITE" />
-         </children>
-      </AnchorPane>
+      </Pane>
    </children>
-</HBox>
+</AnchorPane>
