@@ -32,19 +32,22 @@ public class MainController {
             showAlert(Alert.AlertType.ERROR, "Error", "All fields must be filled out.");
             return;
         }
-        // Get user data from singleton instance
-        UserData userData = UserData.getInstance();
-        String storedUsername = userData.getUsername();
-        String storedEmail = userData.getEmail();
-        String storedPassword = userData.getPassword();
-
-        // Check if the input matches either the username or email and the password
-        if ((username.equals(storedUsername) || username.equals(storedEmail)) && password.equals(storedPassword)) {
-            showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome to BudgetBuddy!");
+        UserData authenticatedUser = authenticateUser(username, password);
+        if (authenticatedUser != null) {
+            showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome, " + authenticatedUser.getUsername() + "!");
             loadScene(e, "HomePage.fxml", "BudgetBuddy - Dashboard");
         } else {
             showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username/email or password.");
         }
+    }
+
+    private UserData authenticateUser(String username, String password) {
+        for (UserData user : UserData.UserManager.getUsers()) {
+            if ((username.equals(user.getUsername()) || username.equals(user.getEmail())) && password.equals(user.getPassword())) {
+                return user;  // Successfully authenticated
+            }
+        }
+        return null;  // Authentication failed
     }
 
     @FXML
