@@ -2,7 +2,12 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -95,7 +100,7 @@
                </image>
             </ImageView>
             <Rectangle fill="WHITE" height="240.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="222.0" />
-            <ImageView fitHeight="222.0" fitWidth="222.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="222.0" fitWidth="222.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@src.main.images/logoBB.png" />
                </image>
@@ -104,89 +109,74 @@
       </Pane>
       <AnchorPane layoutX="220.0" prefHeight="600.0" prefWidth="710.0" style="-fx-background-color: #232323;">
          <children>
-            <Button fx:id="btnNewBudget" layoutX="24.0" layoutY="25.0" mnemonicParsing="false" style="-fx-background-color: #5b5b5b; -fx-background-radius: 20;" text="CREATE BUDGET" textFill="WHITE">
+            <Button fx:id="btnNewBudget" layoutX="24.0" layoutY="25.0" mnemonicParsing="false" onAction="#handleCreateBudget" style="-fx-background-color: #5b5b5b; -fx-background-radius: 20;" text="CREATE BUDGET" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="19.0" />
                </font></Button>
-            <ScrollPane hbarPolicy="ALWAYS" hvalue="1.0" layoutX="24.0" layoutY="117.0" prefHeight="450.0" prefWidth="670.0" style="-fx-background-color: #232323;" stylesheets="@style.css" vbarPolicy="NEVER">
+            <AnchorPane fx:id="createBudget" layoutX="20.0" layoutY="120.0" prefHeight="450.0" prefWidth="670.0" visible="false">
+               <children>
+                  <Label layoutX="20.0" layoutY="14.0" prefHeight="20.0" prefWidth="150.0" text="CHOOSE MONTH:" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="18.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="monthCB" layoutX="20.0" layoutY="40.0" prefWidth="150.0" style="-fx-background-radius: 20;" visibleRowCount="6" />
+                  <Label layoutX="20.0" layoutY="95.0" prefHeight="20.0" prefWidth="205.0" text="EXPENSES CATEGORY:" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="18.0" />
+                     </font>
+                  </Label>
+                  <CheckBox fx:id="ess_cat" layoutX="20.0" layoutY="130.0" mnemonicParsing="false" text="Essentials" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="15.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="life_cat" layoutX="20.0" layoutY="170.0" mnemonicParsing="false" text="Lifestyle" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="15.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="edu_cat" layoutX="167.0" layoutY="130.0" mnemonicParsing="false" text="Education" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="15.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="sav_cat" layoutX="167.0" layoutY="170.0" mnemonicParsing="false" text="Savings &amp; Investments" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="15.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="gift_cat" layoutX="335.0" layoutY="130.0" mnemonicParsing="false" text="Miscellaneous &amp; Giving" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="15.0" />
+                     </font>
+                  </CheckBox>
+                  <Label layoutX="20.0" layoutY="225.0" prefHeight="20.0" prefWidth="150.0" text="ENTER AMOUNT:" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="221.0" layoutY="98.0" text="(Choose atleast 3)" textFill="WHITE">
+                     <font>
+                        <Font name="Cascadia Code Regular" size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtAmount" layoutX="20.0" layoutY="255.0" prefHeight="26.0" prefWidth="206.0" promptText="Amount" style="-fx-background-radius: 20;" />
+                  <Button fx:id="btnSubmit" layoutX="545.0" layoutY="405.0" mnemonicParsing="false" onAction="#handleSubmitBudget" prefHeight="30.0" prefWidth="110.0" style="-fx-background-radius: 20; -fx-background-color: #6D6D6D;" text="SUBMIT" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Console" size="14.0" />
+                     </font>
+                  </Button>
+                  <ProgressBar fx:id="createProgressBar" layoutX="20.0" layoutY="411.0" prefHeight="18.0" prefWidth="510.0" progress="0.0" style="-fx-border-color: #232323; -fx-background-color: #232323;" />
+               </children>
+            </AnchorPane>
+            <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" layoutX="20.0" layoutY="120.0" prefHeight="450.0" prefWidth="670.0" style="-fx-background-color: #232323; -fx-border-color: #232323;" stylesheets="@style.css" vbarPolicy="NEVER">
                <content>
-                  <HBox prefHeight="455.0" prefWidth="1005.0" style="-fx-background-color: #232323;">
+                  <AnchorPane prefHeight="450.0" prefWidth="670.0" style="-fx-background-color: #232323;">
                      <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#6d6d6d" height="420.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                              <Button layoutX="140.0" layoutY="390.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="EDIT" textFill="#f89c03">
-                                 <font>
-                                    <Font name="Lucida Console" size="14.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#6d6d6d" height="420.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                              <Button layoutX="140.0" layoutY="390.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="EDIT" textFill="#f89c03">
-                                 <font>
-                                    <Font name="Lucida Console" size="14.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#6d6d6d" height="420.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                              <Button layoutX="140.0" layoutY="390.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="EDIT" textFill="#f89c03">
-                                 <font>
-                                    <Font name="Lucida Console" size="14.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#6d6d6d" height="420.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                              <Button layoutX="140.0" layoutY="390.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="EDIT" textFill="#f89c03">
-                                 <font>
-                                    <Font name="Lucida Console" size="14.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#6d6d6d" height="420.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                              <Button layoutX="140.0" layoutY="390.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="EDIT" textFill="#f89c03">
-                                 <font>
-                                    <Font name="Lucida Console" size="14.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </AnchorPane>
-                     </children></HBox>
+                        <HBox fx:id="hbox" prefHeight="430.0" prefWidth="670.0" spacing="10.0" />
+                     </children>
+                  </AnchorPane>
                </content>
             </ScrollPane>
          </children>
