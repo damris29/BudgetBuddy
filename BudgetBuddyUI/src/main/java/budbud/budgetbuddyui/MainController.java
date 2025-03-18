@@ -13,23 +13,38 @@ import java.io.IOException;
 
 public class MainController {
 
-    @FXML private TextField user_login;
-    @FXML private PasswordField passw_login;
-    @FXML private Button btnlogin;
-    @FXML private Button btnsignup;
-    @FXML private Hyperlink passwforgor;
+    @FXML private TextField txtUserL;
+    @FXML private PasswordField txtPassL;
+    @FXML private Button btnNext;
+    @FXML private Hyperlink toSignUp;
+
+    public void initialize() {
+        addHoverEffect(btnNext);
+    }
 
     @FXML
     public void handleLogin(ActionEvent e) {
-        String username = user_login.getText();
-        String password = passw_login.getText();
+        String username = txtUserL.getText();
+        String email = txtUserL.getText();
+        String password = txtPassL.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Error", "All fields must be filled out.");
             return;
         }
+        // Get user data from singleton instance
+        UserData userData = UserData.getInstance();
+        String storedUsername = userData.getUsername();
+        String storedEmail = userData.getEmail();
+        String storedPassword = userData.getPassword();
 
-        loadScene(e, "HomePage.fxml", "BudgetBuddy - Dashboard");
+        // Check if the input matches either the username or email and the password
+        if ((username.equals(storedUsername) || username.equals(storedEmail)) && password.equals(storedPassword)) {
+            showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome to BudgetBuddy!");
+            loadScene(e, "HomePage.fxml", "BudgetBuddy - Dashboard");
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username/email or password.");
+        }
     }
 
     @FXML
@@ -56,5 +71,10 @@ public class MainController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void addHoverEffect(Button button) {
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color:  #FFFFFF; -fx-text-fill: #242424; -fx-border-color: #000000;")); //changes color when hover mouse
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color:   #242424; -fx-text-fill: #FFFFFF;")); //back to original color
     }
 }
