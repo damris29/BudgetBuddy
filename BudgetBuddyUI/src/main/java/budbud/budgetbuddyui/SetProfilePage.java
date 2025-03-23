@@ -31,6 +31,7 @@ public class SetProfilePage {
     @FXML private Button btnChangePassw;
     @FXML private Button btnLogout;
     @FXML private Button btnSave;
+    @FXML private Button btnSavePassw;
     @FXML private Label lblUsername, lblEmail, lblPhone, lblBirthdate;
 
     @FXML
@@ -44,6 +45,7 @@ public class SetProfilePage {
         addHoverEffectOnPanel(btnChangePassw);
         addHoverEffectOnPanel(btnLogout);
         addHoverEffectOnPanel(btnSave);
+        addHoverEffectOnPanel(btnSavePassw);
 
         displayUserInfo();
     }
@@ -74,6 +76,7 @@ public class SetProfilePage {
         txtBirthProfile.setText(user.getBirthdate());
     }
 
+    //Save Info after complete edit
     @FXML
     private void handleSaveInfo(ActionEvent event) {
         UserData user = UserData.UserManager.getLoggedInUser();
@@ -92,7 +95,7 @@ public class SetProfilePage {
 
         // Update display
         displayUserInfo();
-        
+
         // Hide text fields and show labels again
         lblUsername.setVisible(true);
         lblEmail.setVisible(true);
