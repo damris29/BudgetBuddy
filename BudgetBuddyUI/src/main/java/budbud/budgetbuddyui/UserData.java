@@ -30,6 +30,7 @@ public class UserData {
     public void setEmail(String email) { this.email = email; }
     public void setPhone(String phone) { this.phone = phone; }
     public void setBirthdate(String birthdate) { this.birthdate = birthdate; }
+    public void setPassword(String password) { this.password = password; }
 
     public static class UserManager {
         private static UserData loggedInUser;  // Store the logged-in user
