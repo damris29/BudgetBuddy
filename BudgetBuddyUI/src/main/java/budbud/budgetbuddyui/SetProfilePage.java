@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -22,18 +21,16 @@ public class SetProfilePage {
     @FXML private Button btnTips;
     @FXML private Button btnGoals;
 
-    //Page Panel
+    //Page MenuProfile
     @FXML private TextField txtUserProfile;
     @FXML private TextField txtEmailProfile;
     @FXML private TextField txtPhoneProfile;
     @FXML private TextField txtBirthProfile;
     @FXML private Button btnChangeInfo;
-    @FXML private Button btnChangePassw;
     @FXML private Button btnLogout;
     @FXML private Button btnSave;
-    @FXML private Button btnSavePassw;
     @FXML private Label lblUsername, lblEmail, lblPhone, lblBirthdate;
-
+    
     @FXML
     public void initialize() {
         addHoverEffect(btnHome);
@@ -42,16 +39,12 @@ public class SetProfilePage {
         addHoverEffect(btnTips);
         addHoverEffect(btnGoals);
         addHoverEffectOnPanel(btnChangeInfo);
-        addHoverEffectOnPanel(btnChangePassw);
         addHoverEffectOnPanel(btnLogout);
         addHoverEffectOnPanel(btnSave);
-        addHoverEffectOnPanel(btnSavePassw);
 
         displayUserInfo();
     }
-
-
-
+    
     //Button Change Info
     @FXML
     private void handleChangeInfo(ActionEvent event){
@@ -62,7 +55,6 @@ public class SetProfilePage {
         lblBirthdate.setVisible(false);
 
         btnChangeInfo.setVisible(false);
-        btnChangePassw.setVisible(false);
         btnLogout.setVisible(false);
         btnSave.setVisible(true);
 
@@ -113,7 +105,6 @@ public class SetProfilePage {
 
         btnSave.setVisible(false);
         btnChangeInfo.setVisible(true);
-        btnChangePassw.setVisible(true);
         btnLogout.setVisible(true);
 
         // Show confirmation alert
@@ -123,7 +114,6 @@ public class SetProfilePage {
         alert.setContentText("Your profile has been successfully updated.");
         alert.showAndWait();
     }
-
 
     //Button Logout
     @FXML
@@ -200,4 +190,5 @@ public class SetProfilePage {
             lblBirthdate.setText("N/A");
         }
     }
+
 }
