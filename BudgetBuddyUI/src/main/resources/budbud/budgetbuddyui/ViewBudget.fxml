@@ -25,7 +25,7 @@
                   <Insets right="57.0" />
                </padding>
             </Button>
-            <Button fx:id="btnSet" layoutY="300.0" mnemonicParsing="false" onAction="#toBudgetSet" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Set Budget" textFill="WHITE">
+            <Button fx:id="btnSet" layoutY="300.0" mnemonicParsing="false" onAction="#toSetBudget" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Set Budget" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -49,7 +49,7 @@
                   <Insets right="30.0" />
                </padding>
             </Button>
-            <Button fx:id="btnViewBudget1" layoutY="420.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Saving Goals" textFill="WHITE">
+            <Button fx:id="btnGoals" layoutY="420.0" mnemonicParsing="false" onAction="#toGoals" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Saving Goals" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -57,7 +57,7 @@
                   <Insets right="-23.0" />
                </padding>
             </Button>
-            <Button fx:id="btnViewBudget2" layoutY="480.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Financial Tips" textFill="WHITE">
+            <Button fx:id="btnTips" layoutY="480.0" mnemonicParsing="false" onAction="#toTips" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Financial Tips" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -105,18 +105,12 @@
       </Pane>
       <AnchorPane layoutX="222.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #232323;">
          <children>
-            <Label alignment="CENTER" layoutX="20.0" layoutY="35.0" prefHeight="24.0" prefWidth="222.0" text="CHOOSE YEAR" textFill="WHITE">
+            <Label alignment="CENTER" layoutX="20.0" layoutY="50.0" prefHeight="24.0" prefWidth="222.0" text="CHOOSE MONTH" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="22.0" />
                </font>
             </Label>
-            <ComboBox layoutX="20.0" layoutY="65.0" prefHeight="26.0" prefWidth="222.0" style="-fx-background-radius: 20;" />
-            <Label alignment="CENTER" layoutX="20.0" layoutY="110.0" prefHeight="24.0" prefWidth="222.0" text="CHOOSE MONTH" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Lucida Console" size="22.0" />
-               </font>
-            </Label>
-            <ComboBox layoutX="20.0" layoutY="144.0" prefHeight="26.0" prefWidth="222.0" style="-fx-background-radius: 20;" />
+            <ComboBox layoutX="20.0" layoutY="78.0" prefHeight="26.0" prefWidth="222.0" style="-fx-background-radius: 20;" visibleRowCount="3" />
             <AnchorPane layoutX="20.0" layoutY="185.0" prefHeight="380.0" prefWidth="222.0">
                <children>
                   <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#6d6d6d" height="380.0" stroke="BLACK" strokeType="INSIDE" width="222.0" />
