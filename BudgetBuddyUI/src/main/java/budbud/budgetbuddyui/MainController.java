@@ -34,6 +34,7 @@ public class MainController {
         }
         UserData authenticatedUser = authenticateUser(username, password);
         if (authenticatedUser != null) {
+            UserData.UserManager.setLoggedInUser(authenticatedUser);
             showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome, " + authenticatedUser.getUsername() + "!");
             loadScene(e, "HomePage.fxml", "BudgetBuddy - Dashboard");
         } else {
