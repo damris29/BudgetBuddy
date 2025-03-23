@@ -30,7 +30,7 @@ public class SignUpPage {
     }
 
     @FXML
-    private void handleSignUp(ActionEvent e){
+    private void handleSignUp(ActionEvent e) {
         String username = txtUserS.getText();
         String email = txtEmailS.getText();
         String phonenum = txtPhoneS.getText();
@@ -48,16 +48,23 @@ public class SignUpPage {
             return;
         }
 
-        if (!password.equals(Cpassword)){
-            showAlert(Alert.AlertType.ERROR, "Error", "Password is not the same.");
+        if (!password.equals(Cpassword)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Passwords do not match.");
             return;
         }
 
-        // Store user details in UserData
-        UserData.getInstance().setUserData(username, email, phonenum, birthdate, password);
+        // Check if email or username is already taken
+        if (UserData.UserManager.isUserExists(username, email)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Username or email is already registered.");
+            return;
+        }
+
+        // Add the new user to the list
+        UserData newUser = new UserData(username, email, phonenum, birthdate, password);
+        UserData.UserManager.addUser(newUser);
 
         showAlert(Alert.AlertType.INFORMATION, "Success", "Sign-up successful!");
-        loadScene(e, "LoginPage.fxml", "BudgetBuddy - Main Page");
+        loadScene(e);
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {
@@ -71,30 +78,27 @@ public class SignUpPage {
     private boolean isValidBirthdate(String birthdate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try {
-            LocalDate date = LocalDate.parse(birthdate, formatter);
-            return true; // If parsing succeeds, the date is valid
+            LocalDate.parse(birthdate, formatter);
+            return true;
         } catch (DateTimeParseException ex) {
-            return false; // Parsing failed, invalid date
+            return false;
         }
     }
 
-    private void loadScene(ActionEvent e, String fxmlFile, String title) {
+    private void loadScene(ActionEvent e) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LoginPage.fxml")));
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle(title);
+            stage.setTitle("BudgetBuddy - Main Page");
             stage.show();
         } catch (IOException ex) {
-            System.out.println("Error loading " + fxmlFile + ": " + ex.getMessage());
+            System.out.println("Error loading " + "LoginPage.fxml" + ": " + ex.getMessage());
         }
     }
 
     private void addHoverEffect(Button button) {
-        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color:  #FFFFFF; -fx-text-fill: #242424; -fx-border-color: #000000;")); //changes color when hover mouse
-        button.setOnMouseExited(e -> button.setStyle("-fx-background-color:   #242424; -fx-text-fill: #FFFFFF;")); //back to original color
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color:  #FFFFFF; -fx-text-fill: #242424; -fx-border-color: #000000;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color:   #242424; -fx-text-fill: #FFFFFF;"));
     }
 }
-
-
-
