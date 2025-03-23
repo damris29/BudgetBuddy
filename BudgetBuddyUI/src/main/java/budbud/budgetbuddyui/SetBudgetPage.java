@@ -46,6 +46,7 @@ public class SetBudgetPage {
     private void handleCreateBudget(){
         createBudget.setVisible(true);
         scrollPane.setVisible(false);
+        btnNewBudget.setDisable(true);
 
         createBudget.setVisible(true);  // Show the budget creation pane
         scrollPane.setVisible(false);   // Hide the scroll pane
@@ -74,6 +75,7 @@ public class SetBudgetPage {
     private void handleSubmitBudget(){
         createBudget.setVisible(false);
         scrollPane.setVisible(true);
+        btnNewBudget.setDisable(false);
 
         //Create Pane
         AnchorPane newPane = new AnchorPane();
@@ -124,11 +126,58 @@ public class SetBudgetPage {
         amountLabel.setLayoutX(70);
         amountLabel.setLayoutY(340);
 
-        // Add all elements to the Pane
-        newPane.getChildren().addAll(monthLabel, categoriesLabel, amountTitleLabel, amountLabel);
+        // Create Edit Button
+        Button editButton = new Button("Edit");
+        editButton.setLayoutX(150);  // Position at bottom left
+        editButton.setLayoutY(390);
+        editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
 
+        // Store the current values to use when editing
+        String selectedMonth = monthCB.getValue();
+        boolean[] selectedCategories = new boolean[5];
+        CheckBox[] categoriesArray = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
+        for (int i = 0; i < categoriesArray.length; i++) {
+            selectedCategories[i] = categoriesArray[i].isSelected();
+        }
+        String amountValue = txtAmount.getText();
+
+        // Add edit functionality
+        editButton.setOnAction(e -> {
+            // Show the create budget form
+            createBudget.setVisible(true);
+            scrollPane.setVisible(false);
+            btnNewBudget.setDisable(true);
+
+            // Populate form with existing data
+            monthCB.setValue(selectedMonth);
+            // Disable month selection in edit mode
+            monthCB.setDisable(true);
+
+            for (int i = 0; i < categoriesArray.length; i++) {
+                categoriesArray[i].setSelected(selectedCategories[i]);
+            }
+            txtAmount.setText(amountValue);
+            updateProgressBar();
+
+            // Remove the current pane when editing
+            hbox.getChildren().remove(newPane);
+            // Update the HBox width
+            hbox.setPrefWidth(hbox.getChildren().size() * (200 + 10));
+            // Set edit mode
+            isEditMode = true;
+            if (btnSubmitBudget != null) {
+                btnSubmitBudget.setText("Update Budget");
+                btnNewBudget.setDisable(false);
+            }
+        });
+
+        // Add all elements to the Pane
+        newPane.getChildren().addAll(monthLabel, categoriesLabel, amountTitleLabel, amountLabel, editButton);
         hbox.getChildren().add(newPane);// Add to HBox
         hbox.setPrefWidth(hbox.getChildren().size() * (200 + 10));// Update width dynamically
+
+        // Reset the form for next use
+        resetBudgetForm();
     }
 
     //Change scenes
@@ -143,6 +192,14 @@ public class SetBudgetPage {
     @FXML
     public void toSetting(ActionEvent event){
         loadScene(event, "SetProfile.fxml", "Budget Buddy - Settings");
+    }
+    @FXML
+    public void toGoals(ActionEvent event){
+        loadScene(event, "GoalsPage.fxml", "Budget Buddy - Goals");
+    }
+    @FXML
+    public void toTips(ActionEvent event){
+        loadScene(event, "FinTipsPage.fxml", "Budget Buddy - Financial Tips");
     }
 
     private void loadScene(ActionEvent e, String fxmlFile, String title) {
@@ -182,6 +239,36 @@ public class SetBudgetPage {
             progress += 0.3;
         }
         createProgressBar.setProgress(Math.min(progress, 1.0));
+    }
+
+    // Fields for the class
+    @FXML private Button btnSubmitBudget;
+    private boolean isEditMode = false;
+
+     // Resets all form elements in the budget creation pane to their default state
+    private void resetBudgetForm() {
+        // Reset month dropdown
+        monthCB.setValue(null);
+        // Re-enable month selection for new budgets
+        monthCB.setDisable(false);
+
+        // Uncheck all category checkboxes
+        CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
+        for (CheckBox checkBox : categories) {
+            checkBox.setSelected(false);
+        }
+
+        // Clear amount text field
+        txtAmount.clear();
+
+        // Reset progress bar
+        createProgressBar.setProgress(0.0);
+
+        // Reset edit mode flag and submit button text
+        isEditMode = false;
+        if (btnSubmitBudget != null) {
+            btnSubmitBudget.setText("Submit Budget");
+        }
     }
 }
 
