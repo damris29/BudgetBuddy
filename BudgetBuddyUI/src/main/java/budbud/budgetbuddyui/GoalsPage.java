@@ -17,6 +17,7 @@ public class GoalsPage {
     @FXML private Button btnViewBudget;
     @FXML private Button btnTips;
     @FXML private Button btnSettings;
+    @FXML private Button btnCreateGoal;
 
     @FXML
     public void initialize() {
@@ -26,6 +27,8 @@ public class GoalsPage {
         addHoverEffect(btnHome);
         addHoverEffect(btnTips);
     }
+
+
 
     private void addHoverEffect(Button button) {
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #5b5b5b;")); //changes color when hover mouse
