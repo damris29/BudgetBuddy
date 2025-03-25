@@ -6,7 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,6 +22,16 @@ public class GoalsPage {
     @FXML private Button btnTips;
     @FXML private Button btnSettings;
     @FXML private Button btnCreateGoal;
+    @FXML private ScrollPane GoalsPane;
+    @FXML private AnchorPane createPane;
+    @FXML private AnchorPane addAmountPane;
+    @FXML private TextField txtTitle, txtAmount;
+    @FXML private Button btnSubmit;
+    @FXML private Label lblTitle, lblTarget;
+    @FXML private ProgressBar progressAmount;
+    @FXML private VBox vbox;
+    @FXML private Button btnAddSubmit;
+    @FXML private TextField txtAmountAdd;
 
     @FXML
     public void initialize() {
@@ -28,7 +42,103 @@ public class GoalsPage {
         addHoverEffect(btnTips);
     }
 
+    @FXML
+    public void handleCreateGoal(){
+        int entamt = 0;
+        GoalsPane.setVisible(false);
+        createPane.setVisible(true);
+        btnCreateGoal.setDisable(true);
 
+        txtTitle.textProperty().addListener((observable, oldValue, newValue) -> {
+            lblTitle.setText("Title: " + newValue);
+        });
+        txtAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtAmount.setText(oldValue);
+            }
+            lblTarget.setText("Target: RM" + entamt + " out of RM" + newValue);
+        });
+    }
+
+    //When user is finish creating goal, it creates a pane on the scroll pane when clicked the submit button
+    @FXML
+    private void handleSubmit(){
+        createPane.setVisible(false);
+        GoalsPane.setVisible(true);
+        btnCreateGoal.setDisable(false);
+
+        //Create pane
+        AnchorPane newPane = new AnchorPane();
+        newPane.setPrefSize(630, 100); // Set pane size
+        newPane.setStyle("-fx-background-color:  #6d6d6d; -fx-background-radius: 20;");
+
+        //Title Label
+        Label title = new Label(lblTitle.getText());
+        title.setFont(Font.font("Lucida Console", 15));
+        title.setTextFill(Color.WHITE);
+        title.setLayoutX(14);
+        title.setLayoutY(14);
+
+        //Title Label
+        Label target = new Label(lblTarget.getText());
+        target.setFont(Font.font("Lucida Console", 15));
+        target.setTextFill(Color.WHITE);
+        target.setLayoutX(14);
+        target.setLayoutY(42);
+
+        //Progress Bar
+        ProgressBar goalProg = new ProgressBar();
+        goalProg.setProgress(0);
+        goalProg.setPrefSize(535, 18);
+        goalProg.setLayoutX(14);
+        goalProg.setLayoutY(70);
+
+        //Add amount button
+        Button addAmt = new Button("Add");
+        addAmt.setLayoutX(580);
+        addAmt.setLayoutY(10);
+        addAmt.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        //Add amount button
+        Button editGoal = new Button("Edit");
+        editGoal.setLayoutX(580);
+        editGoal.setLayoutY(65);
+        editGoal.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        // Event for the Add Amount button
+        addAmt.setOnAction(event -> handleAddAmount(goalProg, target));
+
+        newPane.getChildren().addAll(title, target, goalProg, addAmt, editGoal);
+        vbox.getChildren().add(newPane);// Add to VBox
+        vbox.setPrefHeight(vbox.getChildren().size() * (100 + 10));// Update height dynamically
+
+    }
+
+    //When user have finish create a goal, they can add amount to increase the goal progress bar
+    @FXML
+    private void handleAddAmount(ProgressBar goalProg, Label target) {
+        GoalsPane.setDisable(true);
+        addAmountPane.setVisible(true);
+
+        btnAddSubmit.setOnAction(event -> {
+            try {
+                double targetAmount = Double.parseDouble(txtAmount.getText());
+                double addAmount = Double.parseDouble(txtAmountAdd.getText());
+
+                double progress = Math.min((addAmount / targetAmount), 1.0); // Ensure it doesn't exceed 100%
+                goalProg.setProgress(progress);
+                target.setText("Target: RM" + addAmount + " out of RM" + targetAmount);
+
+                GoalsPane.setDisable(false);
+                addAmountPane.setVisible(false); // Hide addAmountPane after updating
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input: " + e.getMessage());
+            }
+        });
+    }
+
+
+    //User can edit the title and amount of a goal after creating it
 
     private void addHoverEffect(Button button) {
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #5b5b5b;")); //changes color when hover mouse
