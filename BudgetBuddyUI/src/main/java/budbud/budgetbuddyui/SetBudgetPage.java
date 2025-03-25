@@ -14,6 +14,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetBudgetPage {
     @FXML private Button btnHome;
@@ -29,6 +31,8 @@ public class SetBudgetPage {
     @FXML private ProgressBar createProgressBar;
     @FXML private ComboBox<String> monthCB;
     @FXML private TextField txtAmount;
+
+    private static final List<Budget> budgetList = new ArrayList<>(); // Store budgets
 
     @FXML
     public void initialize() {
@@ -77,13 +81,53 @@ public class SetBudgetPage {
         scrollPane.setVisible(true);
         btnNewBudget.setDisable(false);
 
+        // Get the selected month
+        String selectedMonth = monthCB.getValue();
+
+        // Collect selected categories
+        List<String> selectedCategories = new ArrayList<>();
+        CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
+        for (CheckBox checkBox : categories) {
+            if (checkBox.isSelected()) {
+                selectedCategories.add(checkBox.getText());
+            }
+        }
+
+        // Get the budget amount
+        double budgetAmount = Double.parseDouble(txtAmount.getText());
+
+        // Create a new Budget object
+        Budget newBudget = new Budget(selectedMonth, selectedCategories, budgetAmount);
+
+        // Check if we're editing an existing budget
+        if (isEditMode) {
+            // Find and replace the existing budget for this month
+            for (int i = 0; i < budgetList.size(); i++) {
+                if (budgetList.get(i).getMonth().equals(selectedMonth)) {
+                    budgetList.set(i, newBudget);
+                    break;
+                }
+            }
+        } else {
+            // Add the new budget to the list
+            budgetList.add(newBudget);
+        }
+
+        // For debugging - print the current budgetList contents
+        System.out.println("Current Budget List:");
+        for (Budget budget : budgetList) {
+            System.out.println("Month: " + budget.getMonth() +
+                    ", Categories: " + budget.getCategories() +
+                    ", Amount: RM " + budget.getAmount());
+        }
+
         //Create Pane
         AnchorPane newPane = new AnchorPane();
         newPane.setPrefSize(200, 250); // Set pane size
         newPane.setStyle("-fx-background-color:  #6d6d6d; -fx-background-radius: 20;");
 
         // Month Label
-        Label monthLabel = new Label(monthCB.getValue()); // Get selected month
+        Label monthLabel = new Label(selectedMonth);
         monthLabel.setFont(Font.font("Cascadia Code", FontWeight.BOLD, 20));
         monthLabel.setTextFill(javafx.scene.paint.Color.WHITE);
         monthLabel.setLayoutX(70);
@@ -97,20 +141,17 @@ public class SetBudgetPage {
         categoriesLabel.setLayoutY(55);
 
         // Dynamic Categories List
-        CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
         double categoryY = 90;
 
-        for (CheckBox checkBox : categories) {
-            if (checkBox.isSelected()) {
-                Label categoryLabel = new Label(checkBox.getText());
-                categoryLabel.setFont(Font.font("Cascadia Code", FontWeight.BOLD, 15));
-                categoryLabel.setTextFill(javafx.scene.paint.Color.WHITE);
-                categoryLabel.setLayoutX(15);
-                categoryLabel.setLayoutY(categoryY);
-                categoryY += 40; // Move down for next label
+        for (String category : selectedCategories) {
+            Label categoryLabel = new Label(category);
+            categoryLabel.setFont(Font.font("Cascadia Code", FontWeight.BOLD, 15));
+            categoryLabel.setTextFill(javafx.scene.paint.Color.WHITE);
+            categoryLabel.setLayoutX(15);
+            categoryLabel.setLayoutY(categoryY);
+            categoryY += 40; // Move down for next label
 
-                newPane.getChildren().add(categoryLabel);
-            }
+            newPane.getChildren().add(categoryLabel);
         }
 
         // Amount Label
@@ -133,11 +174,10 @@ public class SetBudgetPage {
         editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
 
         // Store the current values to use when editing
-        String selectedMonth = monthCB.getValue();
-        boolean[] selectedCategories = new boolean[5];
-        CheckBox[] categoriesArray = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
-        for (int i = 0; i < categoriesArray.length; i++) {
-            selectedCategories[i] = categoriesArray[i].isSelected();
+        String finalSelectedMonth = selectedMonth;
+        boolean[] selectedCategoryFlags = new boolean[5];
+        for (int i = 0; i < categories.length; i++) {
+            selectedCategoryFlags[i] = categories[i].isSelected();
         }
         String amountValue = txtAmount.getText();
 
@@ -149,12 +189,12 @@ public class SetBudgetPage {
             btnNewBudget.setDisable(true);
 
             // Populate form with existing data
-            monthCB.setValue(selectedMonth);
+            monthCB.setValue(finalSelectedMonth);
             // Disable month selection in edit mode
             monthCB.setDisable(true);
 
-            for (int i = 0; i < categoriesArray.length; i++) {
-                categoriesArray[i].setSelected(selectedCategories[i]);
+            for (int i = 0; i < categories.length; i++) {
+                categories[i].setSelected(selectedCategoryFlags[i]);
             }
             txtAmount.setText(amountValue);
             updateProgressBar();
