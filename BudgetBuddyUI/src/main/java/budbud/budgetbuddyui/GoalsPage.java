@@ -107,6 +107,8 @@ public class GoalsPage {
 
         // Event for the Add Amount button
         addAmt.setOnAction(event -> handleAddAmount(goalProg, target));
+        // Add Edit button event
+        editGoal.setOnAction(event -> handleEditGoal(title, target, goalProg));
 
         newPane.getChildren().addAll(title, target, goalProg, addAmt, editGoal);
         vbox.getChildren().add(newPane);// Add to VBox
@@ -114,7 +116,9 @@ public class GoalsPage {
 
     }
 
-    //When user have finish create a goal, they can add amount to increase the goal progress bar
+    // Store accumulated amounts for each goal
+    private double currentSavedAmount = 0;
+
     @FXML
     private void handleAddAmount(ProgressBar goalProg, Label target) {
         GoalsPane.setDisable(true);
@@ -122,23 +126,70 @@ public class GoalsPage {
 
         btnAddSubmit.setOnAction(event -> {
             try {
-                double targetAmount = Double.parseDouble(txtAmount.getText());
-                double addAmount = Double.parseDouble(txtAmountAdd.getText());
+                double targetAmount = Double.parseDouble(txtAmount.getText()); // Goal amount
+                double addAmount = Double.parseDouble(txtAmountAdd.getText()); // Amount to add
 
-                double progress = Math.min((addAmount / targetAmount), 1.0); // Ensure it doesn't exceed 100%
+                currentSavedAmount += addAmount;
+
+                // Ensure progress doesn't exceed 100%
+                double progress = Math.min(currentSavedAmount / targetAmount, 1.0);
                 goalProg.setProgress(progress);
-                target.setText("Target: RM" + addAmount + " out of RM" + targetAmount);
 
+                target.setText("Target: RM" + currentSavedAmount + " out of RM" + targetAmount);
+                txtAmountAdd.clear();
                 GoalsPane.setDisable(false);
-                addAmountPane.setVisible(false); // Hide addAmountPane after updating
+                addAmountPane.setVisible(false);
+
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input: " + e.getMessage());
             }
         });
     }
 
-
     //User can edit the title and amount of a goal after creating it
+    // Store references to the goal being edited
+    private Label currentTitleLabel;
+    private Label currentTargetLabel;
+    private ProgressBar currentProgressBar;
+
+    @FXML
+    private void handleEditGoal(Label title, Label target, ProgressBar goalProg) {
+        GoalsPane.setDisable(true);
+        addAmountPane.setVisible(false);
+        createPane.setVisible(true); // Reuse createPane for editing
+
+        // Store current goal details
+        currentTitleLabel = title;
+        currentTargetLabel = target;
+        currentProgressBar = goalProg;
+
+        // Populate existing values
+        txtTitle.setText(title.getText().replace("Title: ", ""));
+        txtAmount.setText(target.getText().split("out of RM")[1]); // Extract target amount
+
+        // Change Submit button action for editing
+        btnSubmit.setOnAction(event -> {
+            try {
+                String newTitle = txtTitle.getText();
+                double newTargetAmount = Double.parseDouble(txtAmount.getText());
+
+                // Update UI labels
+                currentTitleLabel.setText("Title: " + newTitle);
+                currentTargetLabel.setText("Target: RM" + currentSavedAmount + " out of RM" + newTargetAmount);
+
+                // Recalculate progress based on new target
+                double newProgress = Math.min(currentSavedAmount / newTargetAmount, 1.0);
+                currentProgressBar.setProgress(newProgress);
+
+                // Hide edit pane after updating
+                createPane.setVisible(false);
+                GoalsPane.setDisable(false);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input: " + e.getMessage());
+            }
+        });
+    }
+
 
     private void addHoverEffect(Button button) {
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #5b5b5b;")); //changes color when hover mouse
