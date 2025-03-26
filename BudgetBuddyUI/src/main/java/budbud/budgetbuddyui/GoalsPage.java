@@ -14,24 +14,52 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GoalsPage {
-    @FXML private Button btnHome;
-    @FXML private Button btnSet;
-    @FXML private Button btnViewBudget;
-    @FXML private Button btnTips;
-    @FXML private Button btnSettings;
-    @FXML private Button btnCreateGoal;
-    @FXML private ScrollPane GoalsPane;
-    @FXML private AnchorPane createPane;
-    @FXML private AnchorPane addAmountPane;
-    @FXML private TextField txtTitle, txtAmount;
-    @FXML private Button btnSubmit;
-    @FXML private Label lblTitle, lblTarget;
-    @FXML private ProgressBar progressAmount;
-    @FXML private VBox vbox;
-    @FXML private Button btnAddSubmit;
-    @FXML private TextField txtAmountAdd;
+    @FXML
+    private Button btnHome;
+    @FXML
+    private Button btnSet;
+    @FXML
+    private Button btnViewBudget;
+    @FXML
+    private Button btnTips;
+    @FXML
+    private Button btnSettings;
+    @FXML
+    private Button btnCreateGoal;
+    @FXML
+    private ScrollPane GoalsPane;
+    @FXML
+    private AnchorPane createPane;
+    @FXML
+    private AnchorPane addAmountPane;
+    @FXML
+    private TextField txtTitle, txtAmount;
+    @FXML
+    private Button btnSubmit;
+    @FXML
+    private Label lblTitle, lblTarget;
+    @FXML
+    private ProgressBar progressAmount;
+    @FXML
+    private VBox vbox;
+    @FXML
+    private Button btnAddSubmit;
+    @FXML
+    private TextField txtAmountAdd;
+
+    // Reference to the data manager
+    private GoalsDataManager dataManager = GoalsDataManager.getInstance();
+
+    // Map to keep track of AnchorPane for each Goal
+    private Map<Goal, AnchorPane> goalPaneMap = new HashMap<>();
+
+    // Current editing goal and index
+    private Goal currentEditingGoal;
+    private int currentEditingIndex = -1;
 
     @FXML
     public void initialize() {
@@ -40,47 +68,56 @@ public class GoalsPage {
         addHoverEffect(btnSettings);
         addHoverEffect(btnHome);
         addHoverEffect(btnTips);
-    }
 
-    @FXML
-    public void handleCreateGoal(){
-        int entamt = 0;
-        GoalsPane.setVisible(false);
-        createPane.setVisible(true);
-        btnCreateGoal.setDisable(true);
+        // Load existing goals from data manager
+        loadGoals();
 
         txtTitle.textProperty().addListener((observable, oldValue, newValue) -> {
             lblTitle.setText("Title: " + newValue);
         });
+
         txtAmount.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
                 txtAmount.setText(oldValue);
+            } else if (!newValue.isEmpty()) {
+                try {
+                    double amount = Double.parseDouble(newValue);
+                    lblTarget.setText("Target: RM0 out of RM" + amount);
+                } catch (NumberFormatException e) {
+                    // Ignore invalid input
+                }
             }
-            lblTarget.setText("Target: RM" + entamt + " out of RM" + newValue);
         });
     }
 
-    //When user is finish creating goal, it creates a pane on the scroll pane when clicked the submit button
-    @FXML
-    private void handleSubmit(){
-        createPane.setVisible(false);
-        GoalsPane.setVisible(true);
-        btnCreateGoal.setDisable(false);
+    private void loadGoals() {
+        vbox.getChildren().clear();
 
+        for (Goal goal : dataManager.getGoals()) {
+            AnchorPane goalPane = createGoalPane(goal);
+            vbox.getChildren().add(goalPane);
+            goalPaneMap.put(goal, goalPane);
+        }
+
+        // Update scroll pane height
+        vbox.setPrefHeight(vbox.getChildren().size() * (100 + 10));
+    }
+
+    private AnchorPane createGoalPane(Goal goal) {
         //Create pane
         AnchorPane newPane = new AnchorPane();
         newPane.setPrefSize(630, 100); // Set pane size
         newPane.setStyle("-fx-background-color:  #6d6d6d; -fx-background-radius: 20;");
 
         //Title Label
-        Label title = new Label(lblTitle.getText());
+        Label title = new Label("Title: " + goal.getTitle());
         title.setFont(Font.font("Lucida Console", 15));
         title.setTextFill(Color.WHITE);
         title.setLayoutX(14);
         title.setLayoutY(14);
 
-        //Title Label
-        Label target = new Label(lblTarget.getText());
+        //Target Label
+        Label target = new Label("Target: RM" + goal.getCurrentAmount() + " out of RM" + goal.getTargetAmount());
         target.setFont(Font.font("Lucida Console", 15));
         target.setTextFill(Color.WHITE);
         target.setLayoutX(14);
@@ -88,7 +125,7 @@ public class GoalsPage {
 
         //Progress Bar
         ProgressBar goalProg = new ProgressBar();
-        goalProg.setProgress(0);
+        goalProg.setProgress(goal.getProgress());
         goalProg.setPrefSize(535, 18);
         goalProg.setLayoutX(14);
         goalProg.setLayoutY(70);
@@ -99,44 +136,94 @@ public class GoalsPage {
         addAmt.setLayoutY(10);
         addAmt.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
 
-        //Add amount button
+        //Edit button
         Button editGoal = new Button("Edit");
         editGoal.setLayoutX(580);
         editGoal.setLayoutY(65);
         editGoal.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
 
         // Event for the Add Amount button
-        addAmt.setOnAction(event -> handleAddAmount(goalProg, target));
+        int goalIndex = dataManager.getGoals().indexOf(goal);
+        addAmt.setOnAction(event -> handleAddAmount(goalIndex));
+
         // Add Edit button event
-        editGoal.setOnAction(event -> handleEditGoal(title, target, goalProg));
+        editGoal.setOnAction(event -> handleEditGoal(goalIndex));
 
         newPane.getChildren().addAll(title, target, goalProg, addAmt, editGoal);
-        vbox.getChildren().add(newPane);// Add to VBox
-        vbox.setPrefHeight(vbox.getChildren().size() * (100 + 10));// Update height dynamically
-
+        return newPane;
     }
 
-    // Store accumulated amounts for each goal
-    private double currentSavedAmount = 0;
+    @FXML
+    public void handleCreateGoal() {
+        GoalsPane.setVisible(false);
+        createPane.setVisible(true);
+        btnCreateGoal.setDisable(true);
+
+        // Reset fields
+        txtTitle.clear();
+        txtAmount.clear();
+        lblTitle.setText("Title: ");
+        lblTarget.setText("Target: RM0 out of RM0");
+
+        // Set submit button to create new goal
+        btnSubmit.setOnAction(event -> handleSubmit());
+    }
 
     @FXML
-    private void handleAddAmount(ProgressBar goalProg, Label target) {
+    private void handleSubmit() {
+        try {
+            String title = txtTitle.getText().trim();
+            double targetAmount = Double.parseDouble(txtAmount.getText());
+
+            if (title.isEmpty()) {
+                // Show error message for empty title
+                return;
+            }
+
+            // Create new goal
+            Goal newGoal = new Goal(title, targetAmount);
+            dataManager.addGoal(newGoal);
+
+            // Create and add new pane
+            AnchorPane goalPane = createGoalPane(newGoal);
+            vbox.getChildren().add(goalPane);
+            goalPaneMap.put(newGoal, goalPane);
+
+            // Update vbox height
+            vbox.setPrefHeight(vbox.getChildren().size() * (100 + 10));
+
+            // Hide create pane
+            createPane.setVisible(false);
+            GoalsPane.setVisible(true);
+            btnCreateGoal.setDisable(false);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleAddAmount(int goalIndex) {
         GoalsPane.setDisable(true);
         addAmountPane.setVisible(true);
+        txtAmountAdd.clear();
+
+        // Store the goal being edited
+        currentEditingIndex = goalIndex;
+        currentEditingGoal = dataManager.getGoals().get(goalIndex);
 
         btnAddSubmit.setOnAction(event -> {
             try {
-                double targetAmount = Double.parseDouble(txtAmount.getText()); // Goal amount
-                double addAmount = Double.parseDouble(txtAmountAdd.getText()); // Amount to add
+                double addAmount = Double.parseDouble(txtAmountAdd.getText());
 
-                currentSavedAmount += addAmount;
+                // Update goal amount
+                currentEditingGoal.addAmount(addAmount);
 
-                // Ensure progress doesn't exceed 100%
-                double progress = Math.min(currentSavedAmount / targetAmount, 1.0);
-                goalProg.setProgress(progress);
+                // Update UI
+                AnchorPane goalPane = goalPaneMap.get(currentEditingGoal);
+                updateGoalPane(goalPane, currentEditingGoal);
 
-                target.setText("Target: RM" + currentSavedAmount + " out of RM" + targetAmount);
-                txtAmountAdd.clear();
+                // Hide add amount pane
                 GoalsPane.setDisable(false);
                 addAmountPane.setVisible(false);
 
@@ -146,77 +233,104 @@ public class GoalsPage {
         });
     }
 
-    //User can edit the title and amount of a goal after creating it
-    // Store references to the goal being edited
-    private Label currentTitleLabel;
-    private Label currentTargetLabel;
-    private ProgressBar currentProgressBar;
+    private void updateGoalPane(AnchorPane pane, Goal goal) {
+        // Update labels and progress bar
+        Label title = (Label) pane.getChildren().get(0);
+        Label target = (Label) pane.getChildren().get(1);
+        ProgressBar progressBar = (ProgressBar) pane.getChildren().get(2);
+
+        title.setText("Title: " + goal.getTitle());
+        target.setText("Target: RM" + goal.getCurrentAmount() + " out of RM" + goal.getTargetAmount());
+        progressBar.setProgress(goal.getProgress());
+    }
 
     @FXML
-    private void handleEditGoal(Label title, Label target, ProgressBar goalProg) {
+    private void handleEditGoal(int goalIndex) {
         GoalsPane.setDisable(true);
         addAmountPane.setVisible(false);
-        createPane.setVisible(true); // Reuse createPane for editing
+        createPane.setVisible(true);
 
-        // Store current goal details
-        currentTitleLabel = title;
-        currentTargetLabel = target;
-        currentProgressBar = goalProg;
+        // Store the goal being edited
+        currentEditingIndex = goalIndex;
+        currentEditingGoal = dataManager.getGoals().get(goalIndex);
 
-        // Populate existing values
-        txtTitle.setText(title.getText().replace("Title: ", ""));
-        txtAmount.setText(target.getText().split("out of RM")[1]); // Extract target amount
+        // Populate fields with current values
+        txtTitle.setText(currentEditingGoal.getTitle());
+        txtAmount.setText(String.valueOf(currentEditingGoal.getTargetAmount()));
+        lblTitle.setText("Title: " + currentEditingGoal.getTitle());
+        lblTarget.setText("Target: RM" + currentEditingGoal.getCurrentAmount() + " out of RM" + currentEditingGoal.getTargetAmount());
 
-        // Change Submit button action for editing
+        // Change submit button action for updating
         btnSubmit.setOnAction(event -> {
             try {
-                String newTitle = txtTitle.getText();
+                String newTitle = txtTitle.getText().trim();
                 double newTargetAmount = Double.parseDouble(txtAmount.getText());
 
-                // Update UI labels
-                currentTitleLabel.setText("Title: " + newTitle);
-                currentTargetLabel.setText("Target: RM" + currentSavedAmount + " out of RM" + newTargetAmount);
+                if (newTitle.isEmpty()) {
+                    // Show error message for empty title
+                    return;
+                }
 
-                // Recalculate progress based on new target
-                double newProgress = Math.min(currentSavedAmount / newTargetAmount, 1.0);
-                currentProgressBar.setProgress(newProgress);
+                // Update goal
+                currentEditingGoal.setTitle(newTitle);
+                currentEditingGoal.setTargetAmount(newTargetAmount);
 
-                // Hide edit pane after updating
+                // Update UI
+                AnchorPane goalPane = goalPaneMap.get(currentEditingGoal);
+                updateGoalPane(goalPane, currentEditingGoal);
+
+                // Hide edit pane
                 createPane.setVisible(false);
                 GoalsPane.setDisable(false);
+                btnCreateGoal.setDisable(false);
+
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input: " + e.getMessage());
             }
         });
     }
 
-
     private void addHoverEffect(Button button) {
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #5b5b5b;")); //changes color when hover mouse
         button.setOnMouseExited(e -> button.setStyle("-fx-background-color:  #6d6d6d;")); //back to original color
     }
 
-    //Change scenes
+
     @FXML
-    public void toHome(ActionEvent event){
+    public void toHome(ActionEvent event) {
         loadScene(event, "HomePage.fxml", "Budget Buddy - Home Page");
     }
+
     @FXML
-    public void toBudgetSet(ActionEvent event){
+    public void toBudgetSet(ActionEvent event) {
         loadScene(event, "SetBudget.fxml", "Budget Buddy - Set Budget");
     }
+
     @FXML
-    public void toBudgetViewer(ActionEvent event){
+    public void toBudgetViewer(ActionEvent event) {
         loadScene(event, "ViewBudget.fxml", "Budget Buddy - Budget Viewer");
     }
+
     @FXML
-    public void toSetting(ActionEvent event){
-        loadScene(event, "SetProfile.fxml", "Budget Buddy - Settings");
+    public void toSetting(ActionEvent event) {
+        loadScene(event, "SetProfile.fxml", "Budget Buddy - Goals");
     }
+
     @FXML
-    public void toTips(ActionEvent event){
-        loadScene(event, "FinTipsPage.fxml", "Budget Buddy - Financial Tips");
+    public void toTips(ActionEvent event) {
+        // Instead of loading the scene, show an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Coming Soon");
+        alert.setHeaderText("Financial Tips");
+        alert.setContentText("This feature is coming soon! Stay tuned for financial tips and advice in our next update.");
+
+        // Show the dialog and wait for user response
+        alert.showAndWait();
+
+        // For debugging purposes, you can log this interaction
+        System.out.println("User attempted to access upcoming Financial Tips feature");
     }
+
 
     private void loadScene(ActionEvent e, String fxmlFile, String title) {
         try {
