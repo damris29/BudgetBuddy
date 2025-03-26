@@ -3,7 +3,16 @@ package budbud.budgetbuddyui;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoalsDataManager {
+// Interface for polymorphism
+interface GoalManager {
+    void addGoal(Goal goal);
+    List<Goal> getGoals();
+    void updateGoal(int index, Goal updatedGoal);
+    void deleteGoal(Goal index);
+    void clearGoals();
+}
+
+public class GoalsDataManager implements GoalManager {
     // Singleton instance
     private static GoalsDataManager instance;
 
@@ -21,32 +30,55 @@ public class GoalsDataManager {
         return instance;
     }
 
-    // Add a new goal
-    public void addGoal(Goal goal) {
+    public void addGoal(Goal goal, boolean logAction) {
         goals.add(goal);
+        if (logAction) {
+            System.out.println("Goal added: " + goal);
+        }
+    }
+
+    @Override
+    public void addGoal(Goal goal) {
+        addGoal(goal, false);
     }
 
     // Get all goals
+    @Override
     public List<Goal> getGoals() {
         return goals;
     }
 
-    // Update an existing goal
+    // Update an existing goal with exception handling
+    @Override
     public void updateGoal(int index, Goal updatedGoal) {
-        if (index >= 0 && index < goals.size()) {
+        try {
             goals.set(index, updatedGoal);
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("Error: Invalid goal index " + index);
         }
     }
 
-    // Delete a goal
-    public void deleteGoal(int index) {
-        if (index >= 0 && index < goals.size()) {
+    // Delete a goal with exception handling
+    @Override
+    public void deleteGoal(Goal index) {
+        try {
             goals.remove(index);
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("Error: Invalid goal index " + index);
         }
     }
 
     // Clear all goals
+    @Override
     public void clearGoals() {
         goals.clear();
+    }
+
+    // Override toString() to display stored goals
+    @Override
+    public String toString() {
+        return "GoalsDataManager{" +
+                "goals=" + goals +
+                '}';
     }
 }
