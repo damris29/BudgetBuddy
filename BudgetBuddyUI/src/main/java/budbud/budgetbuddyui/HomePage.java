@@ -1,32 +1,42 @@
 package budbud.budgetbuddyui;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class HomePage {
 
-    @FXML private Button btnHome;
     @FXML private Button btnSet;
     @FXML private Button btnViewBudget;
     @FXML private Button btnSettings;
     @FXML private Button btnGoals;
     @FXML private Button btnTips;
+    @FXML private Button btnLodgeExp;
+    @FXML private PieChart pieChart;
+    @FXML private AnchorPane lodgePane;
+    @FXML private ComboBox<String> monthCB;
+    @FXML private ChoiceBox<String> catCB;
+    @FXML private TextField txtAmount;
+    @FXML private Button btnSubmit;
+    @FXML private Label lblUsername;
 
-    @FXML ImageView logoutImage;
+    @FXML private ImageView logoutImage;
 
     private final String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Update if needed
     Image imageView = new Image(Objects.requireNonNull(getClass().getResourceAsStream("src.main.images/Logout-BBwUI.png")));
@@ -39,10 +49,172 @@ public class HomePage {
         addHoverEffect(btnGoals);
         addHoverEffect(btnTips);
 
+        displayUserInfo();
+
         logoutImage.setOnMouseClicked(e -> handleImageLogout());
+
+        // Set up the Lodge Expense pane (initially hidden)
+        lodgePane.setVisible(false);
+
+        // Set up validators for the amount field
+        txtAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                txtAmount.setText(oldValue);
+            }
+        });
+
+        // Setup months dropdown
+        List<String> months = new ArrayList<>();
+        months.add("January");
+        months.add("February");
+        months.add("March");
+        months.add("April");
+        months.add("May");
+        months.add("June");
+        months.add("July");
+        months.add("August");
+        months.add("September");
+        months.add("October");
+        months.add("November");
+        months.add("December");
+        monthCB.setItems(FXCollections.observableArrayList(months));
+
+        // Set up listeners
+        monthCB.setOnAction(event -> {
+            updateCategoriesForMonth();
+            // Update chart when month is selected
+            updateExpenseChart(monthCB.getValue());
+        });
+
+        btnSubmit.setOnAction(event -> handleSubmitExpense());
+        btnLodgeExp.setOnAction(event -> toggleLodgeExpensePane());
     }
 
+    /**
+     * Toggles the visibility of the lodge expense pane
+     */
+    private void toggleLodgeExpensePane() {
+        boolean isVisible = lodgePane.isVisible();
+        lodgePane.setVisible(!isVisible);
+        btnLodgeExp.setText(isVisible ? "Lodge Expense" : "Close");
 
+        // If opening the pane and a month is already selected, update the chart
+        if (!isVisible && monthCB.getValue() != null) {
+            updateExpenseChart(monthCB.getValue());
+        }
+    }
+
+    /**
+     * Updates the categories dropdown based on the selected month
+     */
+    private void updateCategoriesForMonth() {
+        String selectedMonth = monthCB.getValue();
+        if (selectedMonth == null) return;
+
+        Budget budget = BudgetDataModel.getBudgetByMonth(selectedMonth);
+        if (budget == null) {
+            showAlert(Alert.AlertType.WARNING, "No Budget",
+                    "No budget exists for " + selectedMonth,
+                    "Please create a budget for this month first.");
+            catCB.getItems().clear();
+            return;
+        }
+
+        // Populate categories
+        catCB.setItems(FXCollections.observableArrayList(budget.getCategories()));
+
+        // Select first category if available
+        if (!catCB.getItems().isEmpty()) {
+            catCB.setValue(catCB.getItems().get(0));
+        }
+    }
+
+    /**
+     * Handles the expense submission
+     */
+    private void handleSubmitExpense() {
+        String selectedMonth = monthCB.getValue();
+        String selectedCategory = catCB.getValue();
+        String amountText = txtAmount.getText();
+
+        // Validate inputs
+        if (selectedMonth == null || selectedMonth.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Missing Month", "Please select a month.");
+            return;
+        }
+
+        if (selectedCategory == null || selectedCategory.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Missing Category", "Please select a category.");
+            return;
+        }
+
+        if (amountText == null || amountText.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Missing Amount", "Please enter an amount.");
+            return;
+        }
+
+        try {
+            double amount = Double.parseDouble(amountText);
+            if (amount <= 0) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Invalid Amount", "Please enter a positive amount.");
+                return;
+            }
+
+            // Store the expense
+            BudgetDataModel.addExpense(selectedMonth, selectedCategory, amount);
+
+            // Show success message
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Expense Logged",
+                    String.format("Successfully logged RM%.2f for %s in %s",
+                            amount, selectedCategory, selectedMonth));
+
+            // Clear the form
+            txtAmount.clear();
+
+            // Update the chart
+            updateExpenseChart(selectedMonth);
+
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Invalid Amount", "Please enter a valid number.");
+        }
+    }
+
+    /**
+     * Updates the pie chart with expense data for the selected month
+     */
+    private void updateExpenseChart(String month) {
+        if (month == null) return;
+
+        // Get expenses for month
+        var expenses = BudgetDataModel.getExpensesForMonth(month);
+
+        // Update chart only if there are expenses
+        if (!expenses.isEmpty()) {
+            // Create data for pie chart
+            var pieChartData = FXCollections.observableArrayList();
+            expenses.forEach((category, amount) ->
+                    pieChartData.add(new PieChart.Data(category + " (RM" + String.format("%.2f", amount) + ")", amount))
+            );
+
+            // Get budget for the month if exists
+            Budget budget = BudgetDataModel.getBudgetByMonth(month);
+            if (budget != null) {
+                double totalExpenses = BudgetDataModel.getTotalExpensesForMonth(month);
+                double remaining = budget.getAmount() - totalExpenses;
+            }
+        }
+    }
+
+    /**
+     * Shows an alert dialog
+     */
+    private void showAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 
     @FXML
     private void handleToReport1() {
@@ -115,8 +287,18 @@ public class HomePage {
         loadScene(event, "GoalsPage.fxml", "Budget Buddy - Saving Goals");
     }
     @FXML
-    public void toTips(ActionEvent event){
-        loadScene(event, "FinTipsPage.fxml", "Budget Buddy - Financial Tips");
+    public void toTips(ActionEvent event) {
+        // Instead of loading the scene, show an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Coming Soon");
+        alert.setHeaderText("Financial Tips");
+        alert.setContentText("This feature is coming soon! Stay tuned for financial tips and advice in our next update.");
+
+        // Show the dialog and wait for user response
+        alert.showAndWait();
+
+        // For debugging purposes, you can log this interaction
+        System.out.println("User attempted to access upcoming Financial Tips feature");
     }
 
     private void loadScene(ActionEvent e, String fxmlFile, String title) {
@@ -129,6 +311,16 @@ public class HomePage {
 
         } catch (IOException ex) {
             System.out.println("Error loading " + fxmlFile + ": " + ex.getMessage());
+        }
+    }
+
+    //Display user's info from login/signup
+    private void displayUserInfo() {
+        UserData user = UserData.UserManager.getLoggedInUser();
+        if (user != null) {
+            lblUsername.setText("Welcome, " + user.getUsername() + "!");
+        } else {
+            lblUsername.setText("N/A");
         }
     }
 }
