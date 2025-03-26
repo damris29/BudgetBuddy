@@ -103,27 +103,25 @@
             </ImageView>
          </children>
       </Pane>
-      <AnchorPane layoutX="222.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #232323;">
+      <AnchorPane layoutX="222.0" prefHeight="600.0" prefWidth="710.0" style="-fx-background-color: #232323;">
          <children>
+            <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#6d6d6d" height="510.0" layoutX="295.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="405.0" />
             <Label alignment="CENTER" layoutX="20.0" layoutY="50.0" prefHeight="24.0" prefWidth="222.0" text="CHOOSE MONTH" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="22.0" />
                </font>
             </Label>
-            <ComboBox layoutX="20.0" layoutY="78.0" prefHeight="26.0" prefWidth="222.0" style="-fx-background-radius: 20;" visibleRowCount="3" />
-            <AnchorPane layoutX="20.0" layoutY="185.0" prefHeight="380.0" prefWidth="222.0">
+            <ComboBox fx:id="monthCB" layoutX="20.0" layoutY="78.0" prefHeight="26.0" prefWidth="222.0" style="-fx-background-radius: 20;" visibleRowCount="3" />
+            <AnchorPane fx:id="listPane" layoutX="20.0" layoutY="185.0" prefHeight="380.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d; -fx-background-radius: 20;">
                <children>
-                  <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#6d6d6d" height="380.0" stroke="BLACK" strokeType="INSIDE" width="222.0" />
-                  <Button layoutX="144.0" layoutY="340.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="REMOVE" textFill="#f89c03" />
+                  <Button fx:id="btnRemove" layoutX="144.0" layoutY="340.0" mnemonicParsing="false" style="-fx-background-color: #d40000;" text="REMOVE" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
                </children>
             </AnchorPane>
-            <PieChart layoutX="350.0" layoutY="78.0" prefHeight="300.0" prefWidth="300.0" />
-            <Label layoutX="350.0" layoutY="50.0" prefHeight="24.0" prefWidth="222.0" text="EXPENSES:" textFill="WHITE">
-               <font>
-                  <Font name="Lucida Console" size="22.0" />
-               </font>
-            </Label>
-            <Label layoutX="350.0" layoutY="400.0" prefHeight="24.0" prefWidth="222.0" text="BALANCE:" textFill="WHITE">
+            <PieChart fx:id="pieExpenses" labelsVisible="false" layoutX="302.0" layoutY="79.0" prefHeight="500.0" prefWidth="390.0" />
+            <Label layoutX="295.0" layoutY="50.0" prefHeight="24.0" prefWidth="222.0" text="EXPENSES:" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="22.0" />
                </font>
