@@ -31,7 +31,6 @@ public class ViewBudgetPage {
     @FXML private ComboBox<String> monthCB;
     @FXML private AnchorPane listPane;
     @FXML private PieChart pieExpenses;
-    @FXML private Button btnRemove;
 
     @FXML
     public void initialize() {
@@ -50,17 +49,6 @@ public class ViewBudgetPage {
 
         // Set up listener for month selection
         monthCB.setOnAction(event -> displayBudgetForSelectedMonth());
-
-        // Set up remove button action
-        btnRemove.setOnAction(event -> {
-            String selectedMonth = monthCB.getValue();
-            if (selectedMonth != null) {
-                Budget budget = BudgetDataModel.getBudgetByMonth(selectedMonth);
-                if (budget != null) {
-                    deleteBudget(budget);
-                }
-            }
-        });
     }
 
     /**
