@@ -5,7 +5,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -45,7 +44,7 @@
                   <Insets right="-37.0" />
                </padding>
             </Button>
-            <Button fx:id="btnGoals" layoutX="-1.0" layoutY="420.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Saving Goals" textFill="WHITE">
+            <Button fx:id="btnGoals" layoutX="-1.0" layoutY="420.0" mnemonicParsing="false" onAction="#toGoals" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Saving Goals" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -53,7 +52,7 @@
                   <Insets right="-23.0" />
                </padding>
             </Button>
-            <Button fx:id="btnTips" layoutX="-1.0" layoutY="480.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Financial Tips" textFill="WHITE">
+            <Button fx:id="btnTips" layoutX="-1.0" layoutY="480.0" mnemonicParsing="false" onAction="#toTips" prefHeight="60.0" prefWidth="222.0" style="-fx-background-color: #6d6d6d;" text="Financial Tips" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
@@ -167,7 +166,6 @@
                         <Font name="Lucida Console" size="14.0" />
                      </font>
                   </Button>
-                  <ProgressBar fx:id="createProgressBar" layoutX="20.0" layoutY="411.0" prefHeight="18.0" prefWidth="510.0" progress="0.0" style="-fx-border-color: #232323; -fx-background-color: #232323;" />
                </children>
             </AnchorPane>
             <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" layoutX="20.0" layoutY="120.0" prefHeight="450.0" prefWidth="670.0" style="-fx-background-color: #232323; -fx-border-color: #232323;" stylesheets="@style.css" vbarPolicy="NEVER">
