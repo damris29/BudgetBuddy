@@ -28,6 +28,7 @@ public class HomePage {
 
     @FXML ImageView logoutImage;
 
+    private final String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Update if needed
     Image imageView = new Image(Objects.requireNonNull(getClass().getResourceAsStream("src.main.images/Logout-BBwUI.png")));
 
     @FXML
@@ -39,6 +40,38 @@ public class HomePage {
         addHoverEffect(btnTips);
 
         logoutImage.setOnMouseClicked(e -> handleImageLogout());
+    }
+
+
+
+    @FXML
+    private void handleToReport1() {
+        openLinkInChrome("https://www.crowe.com/my/news/key-highlights-of-malaysias-budget-2025");
+    }
+
+    @FXML
+    private void handleToReport2() {
+        openLinkInChrome("https://www.malaymail.com/news/malaysia/2024/10/19/budget-2025-whats-in-it-for-you-and-your-family/154101");
+    }
+
+    @FXML
+    private void handleToReport3() {
+        openLinkInChrome("https://thesun.my/malaysia-news/malaysia-budget-2025-live-updates-FG13159639");
+    }
+
+    @FXML
+    private void handleToReport4() {
+        openLinkInChrome("https://www.aseanbriefing.com/news/malaysias-budget-2025-impact-for-businesses/");
+    }
+
+    @FXML
+    private void openLinkInChrome(String url) {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(chromePath, url);
+            processBuilder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -98,5 +131,4 @@ public class HomePage {
             System.out.println("Error loading " + fxmlFile + ": " + ex.getMessage());
         }
     }
-
 }
