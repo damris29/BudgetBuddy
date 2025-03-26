@@ -39,12 +39,11 @@ public class BudgetDataModel {
     }
 
     public static Budget getBudgetByMonth(String month) {
-        for (Budget budget : budgetList) {
-            if (budget.getMonth().equals(month)) {
-                return budget;
-            }
-        }
-        return null;
+        //Lambda expression
+        return budgetList.stream()
+                .filter(budget -> budget.getMonth().equals(month))
+                .findFirst()
+                .orElse(null);
     }
 
     // Expense tracking methods
@@ -88,5 +87,14 @@ public class BudgetDataModel {
             return new HashMap<>();
         }
         return expenses.get(month);
+    }
+
+    //toString() helps debugging, to see if the code works
+    @Override
+    public String toString() {
+        return "BudgetDataModel{" +
+                "budgetList=" + budgetList +
+                ", expenses=" + expenses +
+                '}';
     }
 }
