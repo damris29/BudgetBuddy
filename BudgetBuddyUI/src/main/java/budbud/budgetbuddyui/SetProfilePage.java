@@ -30,7 +30,7 @@ public class SetProfilePage {
     @FXML private Button btnLogout;
     @FXML private Button btnSave;
     @FXML private Label lblUsername, lblEmail, lblPhone, lblBirthdate;
-    
+
     @FXML
     public void initialize() {
         addHoverEffect(btnHome);
@@ -44,7 +44,7 @@ public class SetProfilePage {
 
         displayUserInfo();
     }
-    
+
     //Button Change Info
     @FXML
     private void handleChangeInfo(ActionEvent event){
@@ -147,8 +147,18 @@ public class SetProfilePage {
         loadScene(event, "GoalsPage.fxml", "Budget Buddy - Goals");
     }
     @FXML
-    public void toTips(ActionEvent event){
-        loadScene(event, "FinTipsPage.fxml", "Budget Buddy - Financial Tips");
+    public void toTips(ActionEvent event) {
+        // Instead of loading the scene, show an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Coming Soon");
+        alert.setHeaderText("Financial Tips");
+        alert.setContentText("This feature is coming soon! Stay tuned for financial tips and advice in our next update.");
+
+        // Show the dialog and wait for user response
+        alert.showAndWait();
+
+        // For debugging purposes, you can log this interaction
+        System.out.println("User attempted to access upcoming Financial Tips feature");
     }
 
 
