@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SetBudgetPage {
     @FXML private Button btnHome, btnViewBudget, btnGoals, btnTips, btnSettings, btnNewBudget, btnSubmitBudget;
@@ -26,8 +27,6 @@ public class SetBudgetPage {
     @FXML private ComboBox<String> monthCB;
     @FXML private TextField txtAmount;
 
-    // Static List to Retain Budget Data Across Scene Changes
-    private static final List<Budget> budgetList = new ArrayList<>();
     private boolean isEditMode = false;
     private Budget editingBudget = null;
 
@@ -64,6 +63,11 @@ public class SetBudgetPage {
         scrollPane.setVisible(true);
         btnNewBudget.setDisable(false);
 
+        // Validate input
+        if (!validateBudgetInput()) {
+            return;
+        }
+
         String selectedMonth = monthCB.getValue();
         List<String> selectedCategories = new ArrayList<>();
         CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
@@ -75,21 +79,49 @@ public class SetBudgetPage {
 
         double budgetAmount = Double.parseDouble(txtAmount.getText());
         Budget newBudget = new Budget(selectedMonth, selectedCategories, budgetAmount);
-        BudgetDataModel.addBudget(newBudget);
 
-        if (isEditMode) {
-            for (int i = 0; i < budgetList.size(); i++) {
-                if (budgetList.get(i).getMonth().equals(selectedMonth)) {
-                    budgetList.set(i, newBudget);
-                    break;
-                }
-            }
-        } else {
-            budgetList.add(newBudget);
-        }
+        // Add to BudgetDataModel
+        BudgetDataModel.addBudget(newBudget);
 
         updateBudgetDisplay();
         resetBudgetForm();
+    }
+
+    private boolean validateBudgetInput() {
+        String selectedMonth = monthCB.getValue();
+        if (selectedMonth == null || selectedMonth.isEmpty()) {
+            showAlert("Please select a month.");
+            return false;
+        }
+
+        boolean hasCategory = false;
+        CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
+        for (CheckBox checkBox : categories) {
+            if (checkBox.isSelected()) {
+                hasCategory = true;
+                break;
+            }
+        }
+
+        if (!hasCategory) {
+            showAlert("Please select at least one category.");
+            return false;
+        }
+
+        if (txtAmount.getText().isEmpty() || !txtAmount.getText().matches("\\d+(\\.\\d{1,2})?")) {
+            showAlert("Please enter a valid amount.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Input Validation");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void updateBudgetDisplay() {
@@ -117,6 +149,7 @@ public class SetBudgetPage {
         categoriesLabel.setLayoutX(15);
         categoriesLabel.setLayoutY(55);
 
+        // Display categories
         double categoryY = 90;
         for (String category : budget.getCategories()) {
             Label categoryLabel = new Label(category);
@@ -128,19 +161,31 @@ public class SetBudgetPage {
             newPane.getChildren().add(categoryLabel);
         }
 
-        Label amountLabel = new Label("Amount: RM " + budget.getAmount());
+        // Display budget amount
+        Label amountLabel = new Label("Budget: RM " + budget.getAmount());
         amountLabel.setFont(Font.font("Cascadia Code", FontWeight.BOLD, 15));
         amountLabel.setTextFill(javafx.scene.paint.Color.WHITE);
-        amountLabel.setLayoutX(30);
-        amountLabel.setLayoutY(320);
+        amountLabel.setLayoutX(15);
+        amountLabel.setLayoutY(categoryY);
+        categoryY += 30;
 
+        // Buttons
         Button editButton = new Button("Edit");
-        editButton.setLayoutX(150);
-        editButton.setLayoutY(390);
+        editButton.setLayoutX(30);
+        editButton.setLayoutY(350);
         editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
         editButton.setOnAction(e -> editBudget(budget));
 
-        newPane.getChildren().addAll(monthLabel, categoriesLabel, amountLabel, editButton);
+        Button deleteButton = new Button("Delete");
+        deleteButton.setLayoutX(110);
+        deleteButton.setLayoutY(350);
+        deleteButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;");
+        deleteButton.setOnAction(e -> {
+            BudgetDataModel.removeBudget(budget);
+            updateBudgetDisplay();
+        });
+
+        newPane.getChildren().addAll(monthLabel, categoriesLabel, amountLabel, editButton, deleteButton);
         return newPane;
     }
 
@@ -150,7 +195,7 @@ public class SetBudgetPage {
         btnNewBudget.setDisable(true);
 
         monthCB.setValue(budget.getMonth());
-        monthCB.setDisable(true);
+        monthCB.setDisable(true);  // Month should not be changeable during edit
         txtAmount.setText(String.valueOf(budget.getAmount()));
 
         CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
@@ -166,51 +211,12 @@ public class SetBudgetPage {
         monthCB.setValue(null);
         monthCB.setDisable(false);
         txtAmount.clear();
-        for (CheckBox checkBox : new CheckBox[]{ess_cat, life_cat, edu_cat, sav_cat, gift_cat}) {
+        CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
+        for (CheckBox checkBox : categories) {
             checkBox.setSelected(false);
         }
         isEditMode = false;
-    }
-
-    // Method to collect and store budget data
-    private void storeBudget() {
-        String selectedMonth = (monthCB.getValue() != null) ? monthCB.getValue() : "";
-        List<String> selectedCategories = new ArrayList<>();
-        double enteredAmount = 0.0;
-
-        // Ensure a month is selected
-        if (selectedMonth.isEmpty()) {
-            System.out.println("Please select a month.");
-            return;
-        }
-
-        // Collect selected categories
-        CheckBox[] categories = {ess_cat, life_cat, edu_cat, sav_cat, gift_cat};
-        for (CheckBox checkBox : categories) {
-            if (checkBox.isSelected()) {
-                selectedCategories.add(checkBox.getText());
-            }
-        }
-
-        // Ensure at least one category is selected
-        if (selectedCategories.isEmpty()) {
-            System.out.println("Please select at least one category.");
-            return;
-        }
-
-        // Validate and parse amount
-        if (!txtAmount.getText().isEmpty() && txtAmount.getText().matches("\\d+(\\.\\d{1,2})?")) {
-            enteredAmount = Double.parseDouble(txtAmount.getText());
-        } else {
-            System.out.println("Please enter a valid amount.");
-            return;
-        }
-
-        // Store the Budget object
-        Budget budget = new Budget(selectedMonth, selectedCategories, enteredAmount);
-        budgetList.add(budget);
-
-        System.out.println("Budget stored: " + budget.getMonth() + " | " + budget.getCategories() + " | $" + budget.getAmount());
+        editingBudget = null;
     }
 
     private void addHoverEffect(Button button) {
@@ -238,7 +244,19 @@ public class SetBudgetPage {
     @FXML
     private void toGoals(ActionEvent event) { switchScene(event, "Goals.fxml"); }
     @FXML
-    private void toTips(ActionEvent event) { switchScene(event, "Tips.fxml"); }
+    public void toTips(ActionEvent event) {
+        // Instead of loading the scene, show an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Coming Soon");
+        alert.setHeaderText("Financial Tips");
+        alert.setContentText("This feature is coming soon! Stay tuned for financial tips and advice in our next update.");
+
+        // Show the dialog and wait for user response
+        alert.showAndWait();
+
+        // For debugging purposes, you can log this interaction
+        System.out.println("User attempted to access upcoming Financial Tips feature");
+    }
     @FXML
     private void toSetting(ActionEvent event) { switchScene(event, "Settings.fxml"); }
 }
