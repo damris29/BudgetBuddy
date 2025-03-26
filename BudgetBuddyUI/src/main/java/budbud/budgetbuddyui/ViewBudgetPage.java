@@ -20,14 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ViewBudgetPage {
-    @FXML
-    private Button btnHome;
+    @FXML private Button btnHome;
     @FXML private Button btnSet;
     @FXML private Button btnSettings;
     @FXML private Button btnGoals;
@@ -36,9 +32,6 @@ public class ViewBudgetPage {
     @FXML private AnchorPane listPane;
     @FXML private PieChart pieExpenses;
     @FXML private Button btnRemove;
-
-    private List<Budget> budgets = new ArrayList<>();
-    private List<Transaction> transactions = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -58,16 +51,11 @@ public class ViewBudgetPage {
         // Set up listener for month selection
         monthCB.setOnAction(event -> displayBudgetForSelectedMonth());
 
-        // Load sample data if no budgets exist
-        if (BudgetDataModel.getBudgetList().isEmpty()) {
-            loadSampleData();
-        }
-
         // Set up remove button action
         btnRemove.setOnAction(event -> {
             String selectedMonth = monthCB.getValue();
             if (selectedMonth != null) {
-                Budget budget = findBudgetForMonth(selectedMonth);
+                Budget budget = BudgetDataModel.getBudgetByMonth(selectedMonth);
                 if (budget != null) {
                     deleteBudget(budget);
                 }
@@ -87,7 +75,7 @@ public class ViewBudgetPage {
         pieExpenses.getData().clear();
 
         // Find budget for selected month
-        Budget selectedBudget = findBudgetForMonth(selectedMonth);
+        Budget selectedBudget = BudgetDataModel.getBudgetByMonth(selectedMonth);
 
         if (selectedBudget == null) {
             showNoBudgetMessage();
@@ -98,20 +86,7 @@ public class ViewBudgetPage {
         displayBudgetDetails(selectedBudget);
 
         // Display spending chart
-        displaySpendingChart(selectedMonth, selectedBudget);
-    }
-
-    /**
-     * Finds a budget for the specified month
-     */
-    // Update these methods to use the shared model
-    private Budget findBudgetForMonth(String month) {
-        for (Budget budget : BudgetDataModel.getBudgetList()) {
-            if (budget.getMonth().equals(month)) {
-                return budget;
-            }
-        }
-        return null;
+        displaySpendingChart(selectedMonth);
     }
 
     /**
@@ -141,7 +116,7 @@ public class ViewBudgetPage {
         container.getChildren().add(amountLabel);
 
         // Calculate total spending
-        double totalSpent = calculateTotalSpending(budget.getMonth());
+        double totalSpent = BudgetDataModel.getTotalExpensesForMonth(budget.getMonth());
         double remaining = budget.getAmount() - totalSpent;
 
         Label spentLabel = new Label("Total Spent: $" + String.format("%.2f", totalSpent));
@@ -162,9 +137,11 @@ public class ViewBudgetPage {
         separator.setStyle("-fx-font-weight: bold; -fx-padding: 10 0 5 0;");
         container.getChildren().add(separator);
 
-        // Display categories
+        // Display categories with their spending
         for (String category : budget.getCategories()) {
-            Label categoryLabel = new Label(category);
+            double categorySpent = BudgetDataModel.getExpenseForMonthAndCategory(budget.getMonth(), category);
+            Label categoryLabel = new Label(category + ": $" + String.format("%.2f", categorySpent));
+            categoryLabel.setTextFill(Color.WHITE);
             container.getChildren().add(categoryLabel);
         }
 
@@ -174,9 +151,15 @@ public class ViewBudgetPage {
     /**
      * Displays the spending chart for the selected month
      */
-    private void displaySpendingChart(String month, Budget budget) {
+    private void displaySpendingChart(String month) {
         // Get spending data by category
-        Map<String, Double> categorySpending = calculateCategorySpending(month);
+        Map<String, Double> categorySpending = BudgetDataModel.getExpensesForMonth(month);
+
+        // Check if there are any expenses
+        if (categorySpending.isEmpty()) {
+            pieExpenses.setTitle("No expenses recorded for " + month);
+            return;
+        }
 
         // Create pie chart data
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
@@ -188,38 +171,6 @@ public class ViewBudgetPage {
 
         pieExpenses.setData(pieChartData);
         pieExpenses.setTitle("Spending by Category in " + month);
-    }
-
-    /**
-     * Calculates total spending for a given month
-     */
-    private double calculateTotalSpending(String month) {
-        double total = 0;
-        for (Transaction transaction : transactions) {
-            if (transaction.getMonth().equals(month)) {
-                total += transaction.getAmount();
-            }
-        }
-        return total;
-    }
-
-    /**
-     * Calculates spending by category for a given month
-     */
-    private Map<String, Double> calculateCategorySpending(String month) {
-        Map<String, Double> categorySpending = new HashMap<>();
-
-        for (Transaction transaction : transactions) {
-            if (transaction.getMonth().equals(month)) {
-                String category = transaction.getCategory();
-                double amount = transaction.getAmount();
-
-                categorySpending.put(category,
-                        categorySpending.getOrDefault(category, 0.0) + amount);
-            }
-        }
-
-        return categorySpending;
     }
 
     /**
@@ -240,41 +191,13 @@ public class ViewBudgetPage {
         monthCB.setValue(null);
     }
 
-    /**
-     * Loads sample data for demonstration
-     */
-    private void loadSampleData() {
-        // Sample budgets
-        List<String> janCategories = new ArrayList<>();
-        janCategories.add("Groceries");
-        janCategories.add("Utilities");
-        janCategories.add("Entertainment");
-        budgets.add(new Budget("January", janCategories, 1500.0));
-
-        List<String> febCategories = new ArrayList<>();
-        febCategories.add("Groceries");
-        febCategories.add("Rent");
-        febCategories.add("Transportation");
-        budgets.add(new Budget("February", febCategories, 1800.0));
-
-        // Sample transactions
-        transactions.add(new Transaction("January", "Groceries", 350.0));
-        transactions.add(new Transaction("January", "Utilities", 120.0));
-        transactions.add(new Transaction("January", "Entertainment", 200.0));
-
-        transactions.add(new Transaction("February", "Groceries", 325.0));
-        transactions.add(new Transaction("February", "Rent", 850.0));
-        transactions.add(new Transaction("February", "Transportation", 150.0));
-    }
-
-
     private void addHoverEffect(Button button) {
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #5b5b5b;")); //changes color when hover mouse
         button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #6d6d6d;")); //back to original color
     }
 
     @FXML
-    public void toHome (ActionEvent event){
+    public void toHome(ActionEvent event){
         loadScene(event, "HomePage.fxml", "Budget Buddy - Set Budget");
     }
     @FXML
@@ -290,8 +213,18 @@ public class ViewBudgetPage {
         loadScene(event, "GoalsPage.fxml", "Budget Buddy - Saving Goals");
     }
     @FXML
-    public void toTips(ActionEvent event){
-        loadScene(event, "FinTipsPage.fxml", "Budget Buddy - Financial Tips");
+    public void toTips(ActionEvent event) {
+        // Instead of loading the scene, show an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Coming Soon");
+        alert.setHeaderText("Financial Tips");
+        alert.setContentText("This feature is coming soon! Stay tuned for financial tips and advice in our next update.");
+
+        // Show the dialog and wait for user response
+        alert.showAndWait();
+
+        // For debugging purposes, you can log this interaction
+        System.out.println("User attempted to access upcoming Financial Tips feature");
     }
 
     private void loadScene(ActionEvent e, String fxmlFile, String title) {
@@ -304,31 +237,6 @@ public class ViewBudgetPage {
 
         } catch (IOException ex) {
             System.out.println("Error loading " + fxmlFile + ": " + ex.getMessage());
-        }
-    }
-
-    // Inner class for transaction data
-    private static class Transaction {
-        private final String month;
-        private final String category;
-        private final double amount;
-
-        public Transaction(String month, String category, double amount) {
-            this.month = month;
-            this.category = category;
-            this.amount = amount;
-        }
-
-        public String getMonth() {
-            return month;
-        }
-
-        public String getCategory() {
-            return category;
-        }
-
-        public double getAmount() {
-            return amount;
         }
     }
 }
