@@ -3,9 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -108,7 +111,7 @@
             </ImageView>
          </children>
       </Pane>
-      <AnchorPane layoutX="220.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #232323;">
+      <AnchorPane layoutX="220.0" prefHeight="600.0" prefWidth="710.0" style="-fx-background-color: #232323;">
          <children>
             <HBox layoutX="28.0" layoutY="25.0" prefHeight="50.0" prefWidth="489.0">
                <children>
@@ -117,7 +120,7 @@
                         <Image url="@src.main.images/profile.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="50.0" prefWidth="203.0" text="WELCOME, NAME!" textFill="WHITE" HBox.hgrow="ALWAYS">
+                  <Label fx:id="lblUsername" prefHeight="50.0" prefWidth="203.0" textFill="WHITE" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -130,34 +133,30 @@
                   <Insets />
                </opaqueInsets>
             </HBox>
-            <ScrollPane hbarPolicy="ALWAYS" layoutX="30.0" layoutY="145.0" prefHeight="200.0" prefWidth="650.0" style="-fx-background-color: transparent; -fx-border-color: #232323;" stylesheets="@style.css" vbarPolicy="NEVER">
+            <ScrollPane hbarPolicy="ALWAYS" layoutX="30.0" layoutY="140.0" prefHeight="200.0" prefWidth="650.0" style="-fx-background-color: transparent; -fx-border-color: #232323;" stylesheets="@style.css" vbarPolicy="NEVER">
                <content>
-                  <HBox focusTraversable="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: #232323;">
+                  <HBox focusTraversable="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="600.0" spacing="5.0" style="-fx-background-color: #232323;">
                      <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#a4a1a1" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                              <ImageView fitHeight="100.0" fitWidth="190.0" layoutX="12.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@src.main.images/keyHighlighy.png" />
+                                 </image>
+                              </ImageView>
+                              <Hyperlink fx:id="toReport" layoutX="10.0" layoutY="115.0" onAction="#handleToReport1" prefHeight="50.0" prefWidth="178.0" text="Key Highlights of Malaysia's Budget 2025" underline="true" wrapText="true" />
                            </children>
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#a4a1a1" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                           </children>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#a4a1a1" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                           </children>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#a4a1a1" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                              <ImageView fitHeight="100.0" fitWidth="170.0" layoutX="2.0" pickOnBounds="true" x="12.0" y="14.0">
+                                 <image>
+                                    <Image url="@src.main.images/budgetreport.png" />
+                                 </image>
+                              </ImageView>
+                              <Hyperlink fx:id="toReport1" layoutX="10.0" layoutY="115.0" onAction="#handleToReport2" prefHeight="50.0" prefWidth="178.0" text="Budget 2025: What’s in it for you and your family?" underline="true" wrapText="true" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -166,6 +165,26 @@
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#a4a1a1" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                              <ImageView fitHeight="100.0" fitWidth="170.0" layoutX="15.0" layoutY="14.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@src.main.images/link2.png" />
+                                 </image>
+                              </ImageView>
+                              <Hyperlink fx:id="toReport2" layoutX="10.0" layoutY="115.0" onAction="#handleToReport3" prefHeight="50.0" prefWidth="178.0" text="Malaysia Budget 2025: Live Updates" underline="true" wrapText="true" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#a4a1a1" height="174.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+                              <ImageView fitHeight="99.0" fitWidth="189.0" layoutX="7.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@src.main.images/kl.png" />
+                                 </image>
+                              </ImageView>
+                              <Hyperlink fx:id="toReport3" layoutX="10.0" layoutY="115.0" onAction="#handleToReport4" prefHeight="50.0" prefWidth="178.0" text="Malaysia’s Budget 2025: Impact for Businesses" underline="true" wrapText="true" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -180,28 +199,39 @@
                   <Font name="Inter Bold" size="18.0" />
                </font>
             </Label>
-            <ImageView fx:id="logoutImage" fitHeight="30.0" fitWidth="30.0" layoutX="673.0" layoutY="10.0" onMouseClicked="#handleLogout" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="logoutImage" fitHeight="30.0" fitWidth="30.0" layoutX="670.0" layoutY="10.0" onMouseClicked="#handleLogout" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@src.main.images/switch.png" />
                </image>
             </ImageView>
-            <Button fx:id="btnLodgeExp" layoutX="35.0" layoutY="379.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="240.0" style="-fx-background-radius: 20; -fx-background-color: #5b5b5b;" text="Lodge Daily Expense" textFill="WHITE">
+            <Button fx:id="btnLodgeExp" layoutX="73.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="240.0" style="-fx-background-radius: 20; -fx-background-color: #5b5b5b;" text="Lodge Daily Expense" textFill="WHITE">
                <font>
                   <Font name="Lucida Console" size="18.0" />
                </font>
             </Button>
-            <Label layoutX="393.0" layoutY="379.0" text="Your Monthly Budget Overview" textFill="WHITE">
+            <Label layoutX="371.0" layoutY="356.0" text="Your Monthly Budget Overview" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label layoutX="100.0" layoutY="476.0" text="Budget Meter" textFill="WHITE">
+            <PieChart fx:id="pieChart" layoutX="359.0" layoutY="383.0" legendSide="RIGHT" prefHeight="200.0" prefWidth="271.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="lodgePane" layoutX="240.0" layoutY="100.0" prefHeight="300.0" prefWidth="660.0" style="-fx-background-color: #232323; -fx-border-color: #FFFFFF;" visible="false">
+         <children>
+            <ComboBox fx:id="monthCB" layoutX="67.0" layoutY="67.0" prefWidth="150.0" />
+            <Label layoutX="67.0" layoutY="49.0" text="Choose month:" textFill="WHITE" />
+            <Rectangle fill="WHITE" height="26.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="660.0" />
+            <Label layoutX="10.0" layoutY="4.0" text="Lodge Daily Expenses" />
+            <ChoiceBox fx:id="catCB" layoutX="67.0" layoutY="138.0" prefWidth="150.0" />
+            <Label layoutX="67.0" layoutY="120.0" text="Choose category:" textFill="WHITE" />
+            <TextField fx:id="txtAmount" layoutX="67.0" layoutY="215.0" prefHeight="26.0" prefWidth="170.0" />
+            <Label layoutX="67.0" layoutY="197.0" text="Enter amount for that category: " textFill="WHITE" />
+            <Button fx:id="btnSubmit" layoutX="589.0" layoutY="260.0" mnemonicParsing="false" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20;" text="SUBMIT">
                <font>
-                  <Font size="18.0" />
+                  <Font name="Lucida Console" size="12.0" />
                </font>
-            </Label>
-            <PieChart layoutX="382.0" layoutY="415.0" legendSide="RIGHT" prefHeight="142.0" prefWidth="271.0" />
-            <ProgressBar layoutX="35.0" layoutY="512.0" prefHeight="18.0" prefWidth="240.0" progress="0.0" />
+            </Button>
          </children>
       </AnchorPane>
    </children>
