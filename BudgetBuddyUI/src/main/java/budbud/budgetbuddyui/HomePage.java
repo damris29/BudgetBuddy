@@ -39,7 +39,6 @@ public class HomePage {
     @FXML private ImageView logoutImage;
 
     private final String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Update if needed
-    Image imageView = new Image(Objects.requireNonNull(getClass().getResourceAsStream("src.main.images/Logout-BBwUI.png")));
 
     @FXML
     public void initialize() {
@@ -202,7 +201,7 @@ public class HomePage {
                 double totalExpenses = BudgetDataModel.getTotalExpensesForMonth(month);
                 double remaining = budget.getAmount() - totalExpenses;
             }
-        }
+        }   
     }
 
     /**
