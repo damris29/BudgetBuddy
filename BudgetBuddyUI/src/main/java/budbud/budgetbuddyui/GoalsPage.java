@@ -132,14 +132,14 @@ public class GoalsPage {
 
         //Add amount button
         Button addAmt = new Button("Add");
-        addAmt.setLayoutX(580);
+        addAmt.setLayoutX(530);
         addAmt.setLayoutY(10);
         addAmt.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
 
         //Edit button
         Button editGoal = new Button("Edit");
         editGoal.setLayoutX(580);
-        editGoal.setLayoutY(65);
+        editGoal.setLayoutY(10);
         editGoal.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
 
         // Event for the Add Amount button
@@ -149,7 +149,14 @@ public class GoalsPage {
         // Add Edit button event
         editGoal.setOnAction(event -> handleEditGoal(goalIndex));
 
-        newPane.getChildren().addAll(title, target, goalProg, addAmt, editGoal);
+        // Delete button
+        Button deleteGoal = new Button("Delete");
+        deleteGoal.setLayoutX(560);
+        deleteGoal.setLayoutY(65);
+        deleteGoal.setStyle("-fx-background-color: #d40000; -fx-text-fill: white; -fx-font-weight: bold;");
+        deleteGoal.setOnAction(event -> handleDeleteGoal(goal));
+
+        newPane.getChildren().addAll(title, target, goalProg, addAmt, editGoal, deleteGoal);
         return newPane;
     }
 
@@ -164,6 +171,13 @@ public class GoalsPage {
         txtAmount.clear();
         lblTitle.setText("Title: ");
         lblTarget.setText("Target: RM0 out of RM0");
+
+        // Disable submit button initially
+        btnSubmit.setDisable(true);
+
+        // Enable submit only when valid data is entered
+        txtTitle.textProperty().addListener((observable, oldValue, newValue) -> validateSubmitButton());
+        txtAmount.textProperty().addListener((observable, oldValue, newValue) -> validateSubmitButton());
 
         // Set submit button to create new goal
         btnSubmit.setOnAction(event -> handleSubmit());
@@ -241,7 +255,9 @@ public class GoalsPage {
 
         title.setText("Title: " + goal.getTitle());
         target.setText("Target: RM" + goal.getCurrentAmount() + " out of RM" + goal.getTargetAmount());
-        progressBar.setProgress(goal.getProgress());
+
+        double newProgress = goal.getProgress();
+        animateProgress(progressBar, newProgress);
     }
 
     @FXML
@@ -260,16 +276,18 @@ public class GoalsPage {
         lblTitle.setText("Title: " + currentEditingGoal.getTitle());
         lblTarget.setText("Target: RM" + currentEditingGoal.getCurrentAmount() + " out of RM" + currentEditingGoal.getTargetAmount());
 
+        // Disable submit button initially
+        btnSubmit.setDisable(true);
+        txtTitle.textProperty().addListener((observable, oldValue, newValue) -> validateSubmitButton());
+        txtAmount.textProperty().addListener((observable, oldValue, newValue) -> validateSubmitButton());
+
         // Change submit button action for updating
         btnSubmit.setOnAction(event -> {
             try {
                 String newTitle = txtTitle.getText().trim();
                 double newTargetAmount = Double.parseDouble(txtAmount.getText());
 
-                if (newTitle.isEmpty()) {
-                    // Show error message for empty title
-                    return;
-                }
+                if (newTitle.isEmpty()) return;
 
                 // Update goal
                 currentEditingGoal.setTitle(newTitle);
@@ -279,13 +297,29 @@ public class GoalsPage {
                 AnchorPane goalPane = goalPaneMap.get(currentEditingGoal);
                 updateGoalPane(goalPane, currentEditingGoal);
 
+                showConfirmation("Goal Updated", "Your goal has been successfully updated!");
                 // Hide edit pane
                 createPane.setVisible(false);
                 GoalsPane.setDisable(false);
                 btnCreateGoal.setDisable(false);
-
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input: " + e.getMessage());
+            }
+        });
+    }
+
+    private void handleDeleteGoal(Goal goal) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Goal");
+        alert.setHeaderText("Are you sure you want to delete this goal?");
+        alert.setContentText("This action cannot be undone.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                dataManager.deleteGoal(goal);
+                vbox.getChildren().remove(goalPaneMap.get(goal));
+                goalPaneMap.remove(goal);
+                vbox.setPrefHeight(vbox.getChildren().size() * (100 + 10));
             }
         });
     }
@@ -295,6 +329,24 @@ public class GoalsPage {
         button.setOnMouseExited(e -> button.setStyle("-fx-background-color:  #6d6d6d;")); //back to original color
     }
 
+    private void animateProgress(ProgressBar progressBar, double newProgress) {
+        javafx.animation.Timeline timeline = new javafx.animation.Timeline(
+                new javafx.animation.KeyFrame(javafx.util.Duration.millis(500),
+                        new javafx.animation.KeyValue(progressBar.progressProperty(), newProgress)));
+        timeline.play();
+    }
+
+    private void validateSubmitButton() {
+        btnSubmit.setDisable(txtTitle.getText().trim().isEmpty() || txtAmount.getText().trim().isEmpty());
+    }
+
+    private void showConfirmation(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     @FXML
     public void toHome(ActionEvent event) {
